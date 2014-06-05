@@ -60,7 +60,7 @@ otherwise, it is null. For example:
         'service': 'box'
     }
 
-#### Example Usage
+##### Example Usage
 
 ```javascript
 var e = document.getElementById("auth-button");
@@ -88,7 +88,7 @@ Kloudless.stop(element);
 **stop** stops further click events on an element from triggering the
 Kloudless authentication pop-up.
 
-#### Example Usage
+##### Example Usage
 
 ```javascript
 Kloudless.stop($("#auth-button"))

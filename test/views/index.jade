@@ -1,0 +1,13 @@
+extends layout
+
+block scripts
+  script(type='text/javascript').
+    window.app_id = "#{app_id}";
+  script(src='//code.jquery.com/jquery-1.9.1.js')
+  script(src='/bin/kloudless.authenticator.min.js')
+  script(src='/javascripts/kloudless.authenticator.test.js')
+
+block content
+  p Click the button to open the authentication popup for testing.
+
+  button#auth-test Test authentication!

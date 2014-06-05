@@ -1,0 +1,16 @@
+{
+  "name": "kloudless-auth-widget",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "~4.0.0",
+    "morgan": "*",
+    "body-parser": "*",
+    "method-override": "*",
+    "jade": "*",
+    "stylus": "*"
+  }
+}

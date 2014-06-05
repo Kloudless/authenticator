@@ -118,9 +118,13 @@ The pop-up is opened from within an iframe located on the API server.
 Automated testing is not present. For now, you can manually confirm that it
 works by running the test server included in this package.
 
-    cd test
-    npm install # only needed the first time to install dependencies
-    npm start
+    $ cd test
+    $ npm install # only needed the first time to install dependencies
+    $ KLOUDLESS_APP_ID=app_id npm start
+
+where 'app_id' above is a Kloudless App ID specifying which app to connect the
+accounts to. You can create an application in the Developer Portal for testing
+purposes.
 
 Then navigate to `localhost:3000` and click the button to test if it works.
 `window.Kloudless.baseUrl` should be set to a URI that directs to the API server.

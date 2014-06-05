@@ -160,5 +160,5 @@ emailing security@kloudless.com.
 ## Support
 
 Feel free to contact us at support@kloudless.com with any feedback or
-questions you have. Other methods to contact us are listed
+questions. Other methods to contact us are listed
 [here](https://developers.kloudless.com/docs#getting-help).

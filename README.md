@@ -4,16 +4,16 @@ authenticator.js is a JavaScript library that authenticates users
 to cloud storage services and connects their accounts to your
 [Kloudless](https://developers.kloudless.com) app.
 
-A pop-up will open, allowing the user to choose which cloud storage
-service they would like to connect, and close once the service has been
-connected.
+The library lets you open a pop-up that allows the user to choose a cloud
+storage service to connect. The pop-up closes once the account has been
+successfully connected.
 
-See our [documentation](https://developers.kloudless.com/docs#authentication)
+See the [Kloudless Docs](https://developers.kloudless.com/docs#authentication)
 for other ways to authenticate users.
 
 ## Usage
 
-To use it, embed the Kloudless javascript library, which exposes a global
+Embedding the Kloudless javascript library will expose a global
 `Kloudless` object. The JS file is currently hosted on S3 and can be embedded
 in your page using this tag:
 
@@ -28,9 +28,8 @@ in your page using this tag:
 Kloudless.authenticator(element, params, callback);
 ```
 
-`authenticator` takes an element and sets a click listener to trigger the
-Kloudless authentication pop-up. From here, you can specify a service to
-connect to Kloudless.
+**authenticator** takes an element and sets a click listener to trigger the
+Kloudless authentication pop-up.
 
 `element` specifies the element you want to set the listener on. This can be
 a DOM element or a jQuery object.
@@ -86,7 +85,7 @@ Kloudless.authenticator(e, {
 ```javascript
 Kloudless.stop(element);
 ```
-`stop` stops further click events on an element from triggering the
+**stop** stops further click events on an element from triggering the
 Kloudless authentication pop-up.
 
 #### Example Usage

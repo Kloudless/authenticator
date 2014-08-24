@@ -19,7 +19,7 @@ in your page using this tag:
 
 ```html
 <script type="text/javascript"
- src="https://kloudless-static-assets.s3-us-west-2.amazonaws.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>
+ src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>
 ```
 
 ### authenticator

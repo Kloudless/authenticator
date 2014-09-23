@@ -60,7 +60,17 @@
     document.getElementsByTagName('body')[0].appendChild(iframe);
 
     var listener = function() {
-      iframe.contentWindow.postMessage('[HANDSHAKE]' + window.Kloudless.baseUrl + path, iframe.src);
+     var height = 600
+       , width = 1000
+       , top = ((screen.height - height) / 2) - 50
+       , left = (screen.width - width) / 2;
+      var data = {
+        type: 'open',
+        url: window.Kloudless.baseUrl + path,
+        params: 'height='+height+',width='+width+',top='+top+',left='+left,
+      };
+      iframe.contentWindow.postMessage('kloudless:' + JSON.stringify(data),
+                                       iframe.src);
     };
 
     if (window.Kloudless.listeners[element] !== undefined) {
@@ -71,6 +81,8 @@
     element.addEventListener('click', listener);
 
     window.addEventListener('message', function(message) {
+      var ns = "kloudless:";
+
       if (debug) {
         console.log('[DEBUG] Message received', message);
       }
@@ -79,8 +91,12 @@
         console.log('[ERROR] Origin mismatch:', message);
         return;
       }
+      else if (message.data.indexOf(ns) !== 0) {
+        console.log('[ERROR] Namespace mismsatch:', message);
+        return;
+      }
 
-      var contents = JSON.parse(message.data);
+      var contents = JSON.parse(message.data.substring(ns.length));
       if (contents.type != 'authentication') {
           console.log('[ERROR] Incorrect content type:', message);
         return;
@@ -92,8 +108,8 @@
         handler(null, contents.data);
       }, 0);
 
-      message.source.postMessage(JSON.stringify({
-        success: true
+      message.source.postMessage('kloudless:' + JSON.stringify({
+        type: 'close',
       }), message.origin);
 
       if (debug) {

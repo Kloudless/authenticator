@@ -60,7 +60,7 @@
     document.getElementsByTagName('body')[0].appendChild(iframe);
 
     var listener = function() {
-     var height = 600
+      var height = 600
        , width = 1000
        , top = ((screen.height - height) / 2) - 50
        , left = (screen.width - width) / 2;

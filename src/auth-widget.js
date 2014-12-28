@@ -47,6 +47,7 @@
       path += '?services=' + params.services.map(function(e){return e.trim();}).join(',') + '&';
     }
     path += 'app_id=' + params.app_id +
+            '&admin=' + (params.admin ? 1 : '') +
             '&origin=' + encodeURIComponent(origin);
 
     if (debug) {

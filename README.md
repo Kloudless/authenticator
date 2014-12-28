@@ -108,6 +108,9 @@ The authenticator opens a pop-up with several query parameters indicating what
 to display:
 
 * app_id: The ID of the application to connect the account to.
+* admin: A boolean indicating whether to authenticate an admin user or a
+  regular user. Set to true if you need to access the entire team or
+  organization's data.
 * services: A comma-separated list of services to display.
 * origin: The host that opened the pop-up. Used to send a message back to the
   caller only.

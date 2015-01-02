@@ -12,7 +12,61 @@
   }
 
   window.Kloudless.baseUrl = BASE_URL;
-  window.Kloudless.listeners = {};
+  window.Kloudless._authenticators = {};
+  window.Kloudless._authenticators_by_element = {};
+  window.Kloudless._authenticator_iframe = undefined;
+
+  window.addEventListener('message', function(message) {
+    var ns = "kloudless:";
+
+    if (debug) {
+      console.log('[DEBUG] Message received', message);
+    }
+
+    if (message.origin !== window.Kloudless.baseUrl) {
+      console.log('[ERROR] Origin mismatch:', message);
+      return;
+    }
+    else if (message.data.indexOf(ns) !== 0) {
+      console.log('[ERROR] Namespace mismsatch:', message);
+      return;
+    }
+
+    var contents = JSON.parse(message.data.substring(ns.length));
+    if (contents.type != 'authentication') {
+        console.log('[ERROR] Incorrect content type:', message);
+      return;
+    }
+
+    // TODO: Later, we'll have to implement logic here to identify error-type responses.
+
+    setTimeout(function() {
+      var auth = window.Kloudless._authenticators[contents.id];
+      if (auth) {
+        auth.callback(null, contents.data);
+      }
+    }, 0);
+
+    message.source.postMessage('kloudless:' + JSON.stringify({
+      type: 'close',
+    }), message.origin);
+
+    if (debug) {
+      console.log('[DEBUG] Confirmation sent', message.origin);
+    }
+  }, false);
+
+  var addIframe = function() {
+    if (window.Kloudless._authenticator_iframe !== undefined) return;
+
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('id', 'kloudless_iexd');
+    iframe.setAttribute('src', window.Kloudless.baseUrl + '/static/iexd.html');
+    iframe.style.display = 'none';
+    document.getElementsByTagName('body')[0].appendChild(iframe);
+
+    window.Kloudless._authenticator_iframe = iframe;
+  }
 
   /**
    * Turn an element into a widget
@@ -20,20 +74,23 @@
    *
    * @param  Element  element  The element to turn into a widget
    * @param  Object   params   A hash of parameters to encode into the GET querystring
-   * @param  Function handler  A response handler of signature function(err, result)
+   * @param  Function callback  A response handler of signature function(err, result)
    */
-  window.Kloudless.authenticator = function(element, params, handler) {
+  window.Kloudless.authenticator = function(element, params, callback) {
+    addIframe();
+
     if (window.jQuery !== undefined && element instanceof window.jQuery) {
       element = element.get(0);
     }
     if (!params.app_id) {
       return setTimeout(function() {
-        handler(new Error('You need to specify an app ID.'), null);
+        callback(new Error('You need to specify an app ID.'), null);
       }, 0);
     }
 
     var path = '/services/'
-      , origin = window.location.protocol + '//' + window.location.host;
+      , origin = window.location.protocol + '//' + window.location.host
+      , id = parseInt(Math.random() * Math.pow(10, 10));
 
     if (typeof params.services == 'string') {
       params.services = [params.services];
@@ -48,19 +105,14 @@
     }
     path += 'app_id=' + params.app_id +
             '&admin=' + (params.admin ? 1 : '') +
-            '&origin=' + encodeURIComponent(origin);
+            '&origin=' + encodeURIComponent(origin) +
+            '&request_id=' + id;
 
     if (debug) {
       console.log('[DEBUG]', 'Path is', window.Kloudless.baseUrl + path);
     }
 
-    var iframe = document.createElement('iframe');
-    iframe.setAttribute('id', 'kloudless_iexd');
-    iframe.setAttribute('src', window.Kloudless.baseUrl + '/static/iexd.html');
-    iframe.style.display = 'none';
-    document.getElementsByTagName('body')[0].appendChild(iframe);
-
-    var listener = function() {
+    var clickHandler = function() {
       var height = 600
        , width = 1000
        , top = ((screen.height - height) / 2) - 50
@@ -70,53 +122,21 @@
         url: window.Kloudless.baseUrl + path,
         params: 'height='+height+',width='+width+',top='+top+',left='+left,
       };
+      var iframe = window.Kloudless._authenticator_iframe;
       iframe.contentWindow.postMessage('kloudless:' + JSON.stringify(data),
                                        iframe.src);
     };
 
-    if (window.Kloudless.listeners[element] !== undefined) {
+    if (window.Kloudless._authenticators_by_element[element] !== undefined) {
       window.Kloudless.stop(element);
     }
 
-    window.Kloudless.listeners[element] = listener;
-    element.addEventListener('click', listener);
-
-    window.addEventListener('message', function(message) {
-      var ns = "kloudless:";
-
-      if (debug) {
-        console.log('[DEBUG] Message received', message);
-      }
-
-      if (message.origin !== window.Kloudless.baseUrl) {
-        console.log('[ERROR] Origin mismatch:', message);
-        return;
-      }
-      else if (message.data.indexOf(ns) !== 0) {
-        console.log('[ERROR] Namespace mismsatch:', message);
-        return;
-      }
-
-      var contents = JSON.parse(message.data.substring(ns.length));
-      if (contents.type != 'authentication') {
-          console.log('[ERROR] Incorrect content type:', message);
-        return;
-      }
-
-      // TODO: Later, we'll have to implement logic here to identify error-type responses.
-
-      setTimeout(function() {
-        handler(null, contents.data);
-      }, 0);
-
-      message.source.postMessage('kloudless:' + JSON.stringify({
-        type: 'close',
-      }), message.origin);
-
-      if (debug) {
-        console.log('[DEBUG] Confirmation sent', message.origin);
-      }
-    }, false);
+    window.Kloudless._authenticators[id] = {
+        'clickHandler': clickHandler,
+        'callback': callback,
+    };
+    window.Kloudless._authenticators_by_element[element] = id
+    element.addEventListener('click', clickHandler);
   };
 
   /**
@@ -127,10 +147,12 @@
     if (window.jQuery !== undefined && element instanceof window.jQuery) {
       element = element.get(0);
     }
-    var listener = window.Kloudless.listeners[element];
-    if (listener) {
-      element.removeEventListener('click', listener);
-      delete window.Kloudless.listeners[element];
+    var authID = window.Kloudless._authenticators_by_element[element]
+    if (authID) {
+      var auth = window.Kloudless._authenticators[authID];
+      element.removeEventListener('click', auth.clickHandler);
+      delete window.Kloudless._authenticators[authID];
+      delete window.Kloudless._authenticators_by_element[element];
     }
     else {
       console.log('[DEBUG] No click listener found to remove.');

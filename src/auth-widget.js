@@ -106,7 +106,9 @@
     path += 'app_id=' + params.app_id +
             '&admin=' + (params.admin ? 1 : '') +
             '&origin=' + encodeURIComponent(origin) +
-            '&request_id=' + id;
+            '&request_id=' + id +
+            '&extra=' + (params.extra ? params.extra : '') +
+            '&callback=&retrieve_account_key=';
 
     if (debug) {
       console.log('[DEBUG]', 'Path is', window.Kloudless.baseUrl + path);

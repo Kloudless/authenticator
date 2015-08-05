@@ -110,6 +110,11 @@
             '&extra=' + (params.extra ? params.extra : '') +
             '&callback=&retrieve_account_key=';
 
+    // Used for KENTERPRISE remote networks
+    if (params.group) {
+      path += '&group=' + params.group;
+    }
+
     if (debug) {
       console.log('[DEBUG]', 'Path is', window.Kloudless.baseUrl + path);
     }

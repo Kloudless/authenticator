@@ -48,6 +48,21 @@ will be included.
 Your application's App ID is available on the App Details page in the
 [Developer Portal](https://developers.kloudless.com).
 
+Additionally, the `group` parameter is an optional
+configuration for Kloudless Enterprise. The group key
+is required for the Kloudless Appliance to authenticate
+with services located within a private network.  You can find
+your list of group keys on the App Details page of the
+[Developer portal](https://developers.kloudless.com/application/*/details#kloudless-connect)
+ on your Kloudless Appliance. For more information please
+ visit our authentication documentation for
+ [Kloudless Connect.](https://developers.kloudless.com/docs#authentication)
+
+    {
+        'app_id': '[App ID]',
+        'group': '[Group Key]'
+    }
+
 `callback` specifies a handler which is passed an `err` and `result` object. If
 no errors occurred in authentication, `err` will be null. On successful
 authentication, `result` is an object with the

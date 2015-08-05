@@ -110,7 +110,7 @@
             '&extra=' + (params.extra ? params.extra : '') +
             '&callback=&retrieve_account_key=';
 
-    // Used for KENTERPRISE remote networks
+    // Used for Kloudless Enterprise proxying
     if (params.group) {
       path += '&group=' + params.group;
     }

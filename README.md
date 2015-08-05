@@ -60,6 +60,21 @@ otherwise, it is null. For example:
         'service': 'box'
     }
 
+`group` is a configuration parameter only used for Kloudless
+Enterprise. The group key is required for the Kloudless
+Appliance to authenticate with services located within a
+private network.  You can find your list of group keys on the
+App Details page of the
+[Developer portal](https://developers.kloudless.com/application/*/details#kloudless-connect)
+ on your Kloudless Appliance. For more information please
+ visit our authentication documentation for
+ [Kloudless Connect.](https://developers.kloudless.com/docs#authentication)
+
+    {
+        'app_id': '[App ID]',
+        'group': '[Group Key]'
+    }
+
 ##### Example Usage
 
 ```javascript

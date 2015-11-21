@@ -115,6 +115,10 @@
       path += '&group=' + params.group;
     }
 
+    if (params.edit_account) {
+      path += '&edit_account=' + params.edit_account;
+    }
+
     if (debug) {
       console.log('[DEBUG]', 'Path is', window.Kloudless.baseUrl + path);
     }

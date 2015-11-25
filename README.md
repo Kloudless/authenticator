@@ -47,11 +47,11 @@ Kloudless.authenticator(element, params, callback);
 The **authenticator** method sets a click listener on an element to trigger the
 Kloudless authentication pop-up. It accepts the following required arguments:
 
-* `element`
+* `element`  
   `element` specifies the element you want to set the listener on. This can be
   a DOM element or a jQuery object that references a single DOM element.
 
-* `params`
+* `params`  
   `params` specifies a map of query parameters to include with the OAuth request.
   At a minimum, this must include your Kloudless application ID as the client ID.
   An error is thrown if this is not provided.
@@ -78,7 +78,7 @@ Kloudless authentication pop-up. It accepts the following required arguments:
   Your application's App ID is available on the App Details page in the
   [Developer Portal](https://developers.kloudless.com/applications/*/details).
 
-* `callback`
+* `callback`  
   `callback` specifies a function which is passed a `result` object with the
   response to the OAuth 2.0 Out-of-band flow. `result` contains the access token
   obtained via the OAuth flow, as well as the metadata of the
@@ -152,6 +152,18 @@ than the previous authentication mechanism.
 
 Here are the changes needed:
 
+* Replace the previous script tag with the new one. The version has been removed
+  from the file name.  
+  Previous:  
+  ```html
+  <script type="text/javascript"
+   src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>
+  ```
+  New:  
+  ```html
+  <script type="text/javascript"
+   src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.js"></script>
+  ```
 * The `authenticator()` method now accepts different parameters for `params`.
   See the documentation above for the current format. Here are changes needed:
   * Use `client_id` instead of `app_id`.

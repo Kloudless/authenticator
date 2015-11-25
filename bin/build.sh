@@ -12,6 +12,7 @@ trap cleanup EXIT
 
 base_url=${1:-"https://api.kloudless.com"}
 output=${2:-"kloudless.authenticator.min.js"}
+debug=${KLOUDLESS_DEBUG:-'false'}
 
 if [ "$1" == "-h" -o "$1" == "--help" ];
 then
@@ -28,4 +29,10 @@ then
 fi
 
 set -ux
-uglifyjs ../src/polyfills.js ../src/auth-widget.js -c -m --lint -d BASE_URL=\'$base_url\',DEBUG=false -o $output
+
+uglifyjs_opts="-c -m --lint"
+if [ "$debug" == "true" ];
+then
+    uglifyjs_opts="-b -c"
+fi
+uglifyjs ../src/polyfills.js ../src/auth-widget.js $uglifyjs_opts -d BASE_URL=\'$base_url\',DEBUG=$debug -o $output

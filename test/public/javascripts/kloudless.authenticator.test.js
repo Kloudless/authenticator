@@ -19,4 +19,13 @@
     new_para.appendChild(document.createTextNode(welcome_text));
     document.body.appendChild(new_para);
   });
+
+  window.Kloudless.authenticator($("#oauth-test"), {
+    client_id: window.app_id,
+  }, function(res) {
+    var newEl = document.createElement('pre');
+    newEl.appendChild(document.createTextNode(JSON.stringify(res, null, 2)));
+    document.body.appendChild(newEl);
+  });
+
 })();

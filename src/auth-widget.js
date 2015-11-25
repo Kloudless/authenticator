@@ -11,6 +11,7 @@
     window.Kloudless = {};
   }
 
+  var apiVersion = "v0";
   window.Kloudless.baseUrl = BASE_URL;
   window.Kloudless._authenticators = {};
   window.Kloudless._authenticators_by_element = {};
@@ -38,12 +39,10 @@
       return;
     }
 
-    // TODO: Later, we'll have to implement logic here to identify error-type responses.
-
     setTimeout(function() {
       var auth = window.Kloudless._authenticators[contents.id];
       if (auth) {
-        auth.callback(null, contents.data);
+        auth.callback(contents.data);
       }
     }, 0);
 
@@ -56,6 +55,63 @@
     }
   }, false);
 
+  /*
+   * Older services page auth.
+   */
+  var servicesPathFromParams = function(params) {
+    var path = '/services/';
+
+    if (typeof params.services == 'string') {
+      params.services = [params.services];
+    }
+
+    if (params.services === undefined) {
+      path += '?';
+    } else if (params.services.length == 1) {
+      path += params.services[0] + '?';
+    } else if (params.services.length > 1) {
+      path += '?services=' + params.services.map(function(e){return e.trim();}).join(',') + '&';
+    }
+    path += 'app_id=' + params.app_id +
+            '&admin=' + (params.admin ? 1 : '') +
+            '&extra=' + (params.extra ? params.extra : '') +
+            '&callback=&retrieve_account_key=';
+
+    // Used for Kloudless Enterprise proxying
+    if (params.group) {
+      path += '&group=' + params.group;
+    }
+
+    if (params.edit_account) {
+      path += '&edit_account=' + params.edit_account;
+    }
+
+    return path;
+  }
+
+  /*
+   * OAuth first-leg path.
+   */
+  var oauthPathFromParams = function(params) {
+    var path = "/" + apiVersion + "/oauth/?";
+
+    params.redirect_uri = "urn:ietf:wg:oauth:2.0:oob";
+    params.response_type = "token";
+    params.state = parseInt(Math.random() * Math.pow(10, 10));
+
+    Object.keys(params).forEach(function(key, index) {
+      var val = params[key];
+
+      // Special checks
+      if (key == 'scopes' && val.join)
+        val = val.join(" ");
+
+      path += "&" + key + "=" + val;
+    });
+
+    return path;
+  }
+
   var addIframe = function() {
     if (window.Kloudless._authenticator_iframe !== undefined) return;
 
@@ -66,6 +122,48 @@
     document.getElementsByTagName('body')[0].appendChild(iframe);
 
     window.Kloudless._authenticator_iframe = iframe;
+  }
+
+  /*
+   * Old callback requires errors in the first parameter
+   */
+  var wrapServicesCallback = function(callback) {
+    return function(data) {
+      callback(null, data);
+    };
+  }
+
+  /*
+   * OAuth callback needs additional account information.
+   */
+  var wrapOAuthCallback = function(callback, state) {
+    return function(data) {
+      if (!data.state || data.state.toString() !== state.toString())
+        return callback({error: "invalid_state"});
+
+      if (!data.access_token)
+        return callback(data);
+
+      var headers = {Authorization: "Bearer " + data.access_token};
+
+      // Verify token, and obtain account data.
+      load(window.Kloudless.baseUrl + "/" + apiVersion + "/oauth/token/",
+           headers, function(tokenXHR) {
+             if (tokenXHR.status !== 200)
+               callback(data);
+
+             // Safe to skip client_id checks here based on how this method is called
+             var accountID = JSON.parse(tokenXHR.responseText).account_id;
+
+             load(window.Kloudless.baseUrl + "/" + apiVersion + "/accounts/" +
+                  accountID + "/?retrieve_full=False",
+                  headers, function(accountXHR) {
+                    if (accountXHR.status === 200)
+                      data.account = JSON.parse(accountXHR.responseText);
+                    callback(data);
+                  });
+           });
+    };
   }
 
   /**
@@ -82,42 +180,25 @@
     if (window.jQuery !== undefined && element instanceof window.jQuery) {
       element = element.get(0);
     }
-    if (!params.app_id) {
-      return setTimeout(function() {
-        callback(new Error('You need to specify an app ID.'), null);
-      }, 0);
+
+   if (!params.client_id && !params.app_id) {
+     throw new Error('An App ID is required.');
     }
 
-    var path = '/services/'
-      , origin = window.location.protocol + '//' + window.location.host
-      , id = parseInt(Math.random() * Math.pow(10, 10));
-
-    if (typeof params.services == 'string') {
-      params.services = [params.services];
+    if (params.app_id) {
+      var path = servicesPathFromParams(params);
+      callback = wrapServicesCallback(callback);
+    }
+    else {
+      var path = oauthPathFromParams(params);
+      callback = wrapOAuthCallback(callback, params.state);
     }
 
-    if (params.services === undefined) {
-      path += '?';
-    } else if (params.services.length == 1) {
-      path += params.services[0] + '?';
-    } else if (params.services.length > 1) {
-      path += '?services=' + params.services.map(function(e){return e.trim();}).join(',') + '&';
-    }
-    path += 'app_id=' + params.app_id +
-            '&admin=' + (params.admin ? 1 : '') +
-            '&origin=' + encodeURIComponent(origin) +
-            '&request_id=' + id +
-            '&extra=' + (params.extra ? params.extra : '') +
-            '&callback=&retrieve_account_key=';
+    var requestId = parseInt(Math.random() * Math.pow(10, 10));
+    var origin = window.location.protocol + '//' + window.location.host;
 
-    // Used for Kloudless Enterprise proxying
-    if (params.group) {
-      path += '&group=' + params.group;
-    }
-
-    if (params.edit_account) {
-      path += '&edit_account=' + params.edit_account;
-    }
+    path += '&request_id=' + requestId;
+    path += '&origin=' + encodeURIComponent(origin);
 
     if (debug) {
       console.log('[DEBUG]', 'Path is', window.Kloudless.baseUrl + path);
@@ -131,22 +212,22 @@
       var data = {
         type: 'open',
         url: window.Kloudless.baseUrl + path,
-        params: 'height='+height+',width='+width+',top='+top+',left='+left,
+        params: 'resizable,scrollbars,status,height='+height+',width='+width+',top='+top+',left='+left,
       };
       var iframe = window.Kloudless._authenticator_iframe;
       iframe.contentWindow.postMessage('kloudless:' + JSON.stringify(data),
                                        iframe.src);
     };
 
-    if (window.Kloudless._authenticators_by_element[element] !== undefined) {
+    if (window.Kloudless._authenticators_by_element[element.outerHTML] !== undefined) {
       window.Kloudless.stop(element);
     }
 
-    window.Kloudless._authenticators[id] = {
-        'clickHandler': clickHandler,
-        'callback': callback,
+    window.Kloudless._authenticators[requestId] = {
+      clickHandler: clickHandler,
+      callback: callback,
     };
-    window.Kloudless._authenticators_by_element[element] = id
+    window.Kloudless._authenticators_by_element[element.outerHTML] = requestId
     element.addEventListener('click', clickHandler);
   };
 
@@ -158,15 +239,61 @@
     if (window.jQuery !== undefined && element instanceof window.jQuery) {
       element = element.get(0);
     }
-    var authID = window.Kloudless._authenticators_by_element[element]
+    var authID = window.Kloudless._authenticators_by_element[element.outerHTML]
     if (authID) {
       var auth = window.Kloudless._authenticators[authID];
       element.removeEventListener('click', auth.clickHandler);
       delete window.Kloudless._authenticators[authID];
-      delete window.Kloudless._authenticators_by_element[element];
+      delete window.Kloudless._authenticators_by_element[element.outerHTML];
     }
     else {
-      console.log('[DEBUG] No click listener found to remove.');
+      console.log('No click listener found to remove.');
     }
   };
+
+  /*
+   * Helper methods
+   */
+
+  /*
+   * Loads a URL via an Ajax GET request.
+   */
+  function load(url, headers, callback) {
+    var xhr;
+
+    if (typeof XMLHttpRequest !== 'undefined')
+      xhr = new XMLHttpRequest();
+    else {
+      var versions = ["MSXML2.XmlHttp.5.0",
+                      "MSXML2.XmlHttp.4.0",
+                      "MSXML2.XmlHttp.3.0",
+                      "MSXML2.XmlHttp.2.0",
+                      "Microsoft.XmlHttp"]
+
+      for(var i = 0, len = versions.length; i < len; i++) {
+        try {
+          xhr = new ActiveXObject(versions[i]);
+          break;
+        }
+        catch(e) {}
+      }
+    }
+
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState === 4) {
+        callback(xhr);
+      }
+    }
+
+    xhr.open('GET', url, true);
+
+    if (headers && xhr.setRequestHeader) {
+      Object.keys(headers).forEach(function(k, i) {
+        xhr.setRequestHeader(k, headers[k]);
+      });
+    }
+
+    xhr.send('');
+  }
+
 })();

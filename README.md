@@ -167,6 +167,10 @@ Here are the changes needed:
   retrieved and included in the response, if successful. Otherwise, error
   data is provided. See above documentation for more information on the
   format.
+* Add the domain of the web page including the Authenticator library
+  to your Kloudless application's list of
+  [Trusted Domains](https://developers.kloudless.com/applications/*/details#trusted-domains).
+  This allows the `callback` to receive the access token.
 
 ## Contributing
 

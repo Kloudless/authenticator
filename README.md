@@ -155,15 +155,9 @@ Here are the changes needed:
 * Replace the previous script tag with the new one. The version has been removed
   from the file name.  
   Previous:  
-  ```html
-  <script type="text/javascript"
-   src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>
-  ```
+  `<script src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>`  
   New:  
-  ```html
-  <script type="text/javascript"
-   src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.js"></script>
-  ```
+  `<script src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.js"></script>`
 * The `authenticator()` method now accepts different parameters for `params`.
   See the documentation above for the current format. Here are changes needed:
   * Use `client_id` instead of `app_id`.

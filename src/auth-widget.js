@@ -235,7 +235,7 @@
       // If IE, rely on postmessaging, otherwise just open popup normally
       if (isIE) {
         var data = {
-          type: 'prepareToOpen',
+          type: 'prepareToOpenAuthenticator',
           url: window.Kloudless.baseUrl + path,
           params: popupParams,
         };

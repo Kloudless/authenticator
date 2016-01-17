@@ -16,6 +16,20 @@
   window.Kloudless._authenticators = {};
   window.Kloudless._authenticators_by_element = {};
   window.Kloudless._authenticator_iframe = undefined;
+  window.Kloudless._popup = undefined;
+
+  // IE hax
+  var nav = navigator.userAgent.toLowerCase(),
+      isIE = false,
+      ieVersion = -1;
+
+  if (nav.indexOf('msie') !== -1) { // IE < 11
+    isIE = true;
+    ieVersion = parseInt(nav.split('msie')[1]);
+  } else if (nav.indexOf('trident/') !== -1) { // IE 11+
+    isIE = true;
+    ieVersion = parseInt(nav.split('rv:')[1]);
+  }
 
   window.addEventListener('message', function(message) {
     var ns = "kloudless:";
@@ -46,9 +60,16 @@
       }
     }, 0);
 
-    message.source.postMessage('kloudless:' + JSON.stringify({
-      type: 'close',
-    }), message.origin);
+    if (isIE) {
+      message.source.postMessage('kloudless:' + JSON.stringify({
+        type: 'close',
+      }), message.origin);
+    } else {
+      if (window.Kloudless._popup) {
+        window.Kloudless._popup.close();
+        window.Kloudless._popup = undefined;
+      }
+    }
 
     if (debug) {
       console.log('[DEBUG] Confirmation sent', message.origin);
@@ -209,14 +230,45 @@
        , width = 1000
        , top = ((screen.height - height) / 2) - 50
        , left = (screen.width - width) / 2;
-      var data = {
-        type: 'open',
-        url: window.Kloudless.baseUrl + path,
-        params: 'resizable,scrollbars,status,height='+height+',width='+width+',top='+top+',left='+left,
-      };
-      var iframe = window.Kloudless._authenticator_iframe;
-      iframe.contentWindow.postMessage('kloudless:' + JSON.stringify(data),
-                                       iframe.src);
+      var popupParams = 'resizable,scrollbars,status,height='+height+',width='+width+',top='+top+',left='+left;
+
+      // If IE, rely on postmessaging, otherwise just open popup normally
+      if (isIE) {
+        var data = {
+          type: 'prepareToOpen',
+          url: window.Kloudless.baseUrl + path,
+          params: popupParams,
+        };
+        var iframe = window.Kloudless._authenticator_iframe;
+        iframe.contentWindow.postMessage('kloudless:' + JSON.stringify(data),
+                                         iframe.src);
+
+        iframe.style.position = 'fixed';
+        iframe.style.display = 'block';
+        iframe.style.height = '100%';
+        iframe.style.width = '100%';
+        iframe.style.top = '0';
+        iframe.style.bottom = '0';
+        iframe.style.left = '0';
+        iframe.style.right = '0';
+
+        // Fade the iframe out within 3 seconds.
+        // 3 seconds = (120 ms * ((1 - 0.75) / 0.01))
+        var op = 1;
+        var timer = setInterval(function () {
+          if (op <= 0.75){
+              clearInterval(timer);
+              iframe.style.display = 'none';
+          }
+          iframe.style.opacity = op;
+          iframe.style.filter = 'alpha(opacity=' + op * 100 + ")";
+          op -= op * 0.01;
+        }, 120);
+      } else {
+        window.Kloudless._popup = window.open(window.Kloudless.baseUrl + path,
+          'kPOPUP', popupParams);
+        window.Kloudless._popup.focus();
+      }
     };
 
     if (window.Kloudless._authenticators_by_element[element.outerHTML] !== undefined) {

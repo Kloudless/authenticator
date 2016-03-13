@@ -4,8 +4,8 @@
 (function() {
   'use strict';
 
-  // Uglify takes care of this and varifies it when it's true, otherwise getting rid of it.
-  const debug = DEBUG && true;
+  // Uglify takes care of this and verifies it when it's true, otherwise getting rid of it.
+  var debug = DEBUG && true;
 
   if (window.Kloudless === undefined) {
     window.Kloudless = {};
@@ -206,12 +206,13 @@
      throw new Error('An App ID is required.');
     }
 
+    var path;
     if (params.app_id) {
-      var path = servicesPathFromParams(params);
+      path = servicesPathFromParams(params);
       callback = wrapServicesCallback(callback);
     }
     else {
-      var path = oauthPathFromParams(params);
+      path = oauthPathFromParams(params);
       callback = wrapOAuthCallback(callback, params.state);
     }
 
@@ -226,10 +227,10 @@
     }
 
     var clickHandler = function() {
-      var height = 600
-       , width = 1000
-       , top = ((screen.height - height) / 2) - 50
-       , left = (screen.width - width) / 2;
+      var height = 600,
+          width = 1000,
+          top = ((screen.height - height) / 2) - 50,
+          left = (screen.width - width) / 2;
       var popupParams = 'resizable,scrollbars,status,height='+height+',width='+width+',top='+top+',left='+left;
 
       // If IE, rely on postmessaging, otherwise just open popup normally

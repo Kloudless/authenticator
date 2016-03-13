@@ -1,0 +1,41 @@
+{
+  "name": "kloudless-authenticator",
+  "version": "1.0.0",
+  "description": "Kloudless Authenticator JS library",
+  "main": "src/auth-widget.js",
+  "scripts": {
+    "test": "node test/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kloudless/authenticator.js.git"
+  },
+  "keywords": [
+    "kloudless",
+    "authenticator"
+  ],
+  "author": "Kloudless, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kloudless/authenticator.js/issues"
+  },
+  "homepage": "https://github.com/kloudless/authenticator.js#readme",
+  "devDependencies": {
+    "body-parser": "^1.15.0",
+    "del": "^2.2.0",
+    "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-if": "^2.0.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
+    "jade": "^1.11.0",
+    "jshint": "^2.9.1",
+    "jshint-stylish": "^2.1.0",
+    "method-override": "^2.3.5",
+    "morgan": "^1.7.0",
+    "stylus": "^0.54.2",
+    "yargs": "^4.2.0"
+  }
+}

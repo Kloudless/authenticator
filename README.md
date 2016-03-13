@@ -199,9 +199,7 @@ around cross-domain postMessage restrictions (especially IE).
 Automated testing is not present. For now, you can manually confirm that it
 works by running the test server included in this package.
 
-    $ cd test
-    $ npm install # only needed the first time to install dependencies
-    $ KLOUDLESS_APP_ID=app_id npm start
+    $ KLOUDLESS_APP_ID=app_id npm test
 
 where 'app_id' above is a Kloudless App ID specifying which app to connect the
 accounts to. You can create an application in the Developer Portal for testing
@@ -212,11 +210,17 @@ Then navigate to `localhost:3000` and click the button to test if it works.
 An easy way to do this is by just building the file with the correct base URL.
 
 ### Building
-Run `./bin/build.sh`. This should create an output JS file at `/bin`.
 
-### Dependencies
-* Node.JS + NPM -- testing and building
-* UglifyJS2 -- building
+Build a debug version to enable sourcemaps:
+
+    npm install
+    gulp --debug
+
+To build pointing to a custom API server, use the `--url` option:
+
+    gulp --url=http://custom-api-server:8080
+
+The result will be at `build/kloudless.authenticator.min.js`.
 
 ### Security Vulnerabilities
 
@@ -229,11 +233,10 @@ emailing security@kloudless.com.
 * Make it object-oriented.
 * Add method to allow user to manually make auth pop-up appear.
 * Allow parameters to be configurable without rebinding.
-* Move to gulp build system.
 * Allow authenticator to skip account data retrieval for efficiency purposes.
 
 ### Testing
-* Consider PhantomJS tests.
+* Karma + Jasmine test suite.
 
 ### Bugfixes
 * Error checking for invalid parameters.

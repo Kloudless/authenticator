@@ -142,6 +142,7 @@ Kloudless.stop($("#auth-button"))
 
 Here are some example apps using the authenticator:
 
+* Kloudless Interactive Docs: https://developers.kloudless.com/interactive-docs
 * https://github.com/vinodc/cloud-text-editor
 
 ## Migration Guide

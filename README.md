@@ -113,7 +113,7 @@ var e = document.getElementById("auth-button");
 e = $('#auth-button');
 
 Kloudless.authenticator(e, {
-    'app_id': 'oeD8Kzi8oN2uHvBALivVA_3zlo2OhL5Ja6YtfBrtKLA',
+    'client_id': 'oeD8Kzi8oN2uHvBALivVA_3zlo2OhL5Ja6YtfBrtKLA',
 }, function (result) {
     if (result.error) {
         console.error('An error occurred:', result.error);

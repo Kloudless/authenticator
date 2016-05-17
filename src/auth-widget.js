@@ -107,6 +107,8 @@
       path += '&edit_account=' + params.edit_account;
     }
 
+    if (params.developer) path += '&developer=true';
+
     return path;
   }
 

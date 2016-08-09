@@ -3,7 +3,7 @@
 The Kloudless Authenticator is a JavaScript library that authenticates users
 to cloud services and connects their accounts to your
 [Kloudless](https://developers.kloudless.com) app.
-
+s
 The library lets you open a pop-up that allows the user to choose a cloud
 service to connect. The pop-up closes once the account has been
 successfully connected.
@@ -169,7 +169,7 @@ Here are the changes needed:
 * The `authenticator()` method now accepts different parameters for `params`.
   See the documentation above for the current format. Here are changes needed:
   * Use `client_id` instead of `app_id`.
-  * Use `scopes` instead of `services`. Visit the documentation on Scopes
+  * Use `scope` instead of `services`. Visit the documentation on Scopes
     to learn more.
   * The `admin` flag has now been incorporated as a part of scopes. 
 * The `authenticator()` method now invokes the `callback` provided with a single

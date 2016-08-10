@@ -57,6 +57,8 @@
       var auth = window.Kloudless._authenticators[contents.id];
       if (auth) {
         auth.callback(contents.data);
+      } else {
+        console.log("[ERROR] No Authenticator found for ID:", contents.id);
       }
     }, 0);
 

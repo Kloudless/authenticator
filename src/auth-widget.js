@@ -11,8 +11,8 @@
     window.Kloudless = {};
   }
 
-  var apiVersion = "v0";
   window.Kloudless.baseUrl = BASE_URL;
+  window.Kloudless.apiVersion = "v0";
   window.Kloudless._authenticators = {};
   window.Kloudless._authenticators_by_element = {};
   window.Kloudless._authenticator_iframe = undefined;
@@ -118,7 +118,7 @@
    * OAuth first-leg path.
    */
   var oauthPathFromParams = function(params) {
-    var path = "/" + apiVersion + "/oauth/?";
+    var path = "/" + window.Kloudless.apiVersion + "/oauth/?";
 
     params.redirect_uri = "urn:ietf:wg:oauth:2.0:oob";
     params.response_type = "token";
@@ -172,7 +172,7 @@
       var headers = {Authorization: "Bearer " + data.access_token};
 
       // Verify token, and obtain account data.
-      load(window.Kloudless.baseUrl + "/" + apiVersion + "/oauth/token/",
+      load(window.Kloudless.baseUrl + "/" + window.Kloudless.apiVersion + "/oauth/token/",
            headers, function(tokenXHR) {
              if (tokenXHR.status !== 200)
                callback(data);
@@ -180,7 +180,7 @@
              // Safe to skip client_id checks here based on how this method is called
              var accountID = JSON.parse(tokenXHR.responseText).account_id;
 
-             load(window.Kloudless.baseUrl + "/" + apiVersion + "/accounts/" +
+             load(window.Kloudless.baseUrl + "/" + window.Kloudless.apiVersion + "/accounts/" +
                   accountID + "/?retrieve_full=False",
                   headers, function(accountXHR) {
                     if (accountXHR.status === 200)

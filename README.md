@@ -66,7 +66,7 @@ Kloudless authentication pop-up. It accepts the following required arguments:
   it is an Array. Refer to the docs for more information on Scopes.
 
   A full list of parameters supported is available on the
-  [OAuth docs](https://developers.kloudless.com/docs/latest/authentication#header-first-leg-1).
+  [OAuth docs](https://developers.kloudless.com/docs/latest/authentication#oauth-2.0-first-leg).
   `state`, `response_type` and `redirect_uri` are not required as they will be set
   automatically.
 

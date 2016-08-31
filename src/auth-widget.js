@@ -12,7 +12,7 @@
   }
 
   window.Kloudless.baseUrl = BASE_URL;
-  window.Kloudless.apiVersion = "v0";
+  window.Kloudless.apiVersion = "v1";
   window.Kloudless._authenticators = {};
   window.Kloudless._authenticators_by_element = {};
   window.Kloudless._authenticator_iframe = undefined;

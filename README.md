@@ -3,7 +3,7 @@
 The Kloudless Authenticator is a JavaScript library that authenticates users
 to cloud services and connects their accounts to your
 [Kloudless](https://developers.kloudless.com) app.
-s
+
 The library lets you open a pop-up that allows the user to choose a cloud
 service to connect. The pop-up closes once the account has been
 successfully connected.

@@ -8,7 +8,7 @@ The library lets you open a pop-up that allows the user to choose a cloud
 service to connect. The pop-up closes once the account has been
 successfully connected.
 
-[View a JSFiddle example of the Authenticator in action here.](https://jsfiddle.net/vinodchandru/4f8nsy68/embedded/)
+[View a JSBin example of the Authenticator in action here.](https://output.jsbin.com/defekug)
 
 ## How it works
 
@@ -108,7 +108,7 @@ Kloudless authentication pop-up. It accepts the following required arguments:
 
 ##### Example Usage
 
-[View a JSFiddle example of the Authenticator in action here.](https://jsfiddle.net/vinodchandru/4f8nsy68/embedded/)
+[View a JSBin example of the Authenticator in action here.](https://output.jsbin.com/defekug)
 
 Here is a slightly different example:
 
@@ -148,7 +148,7 @@ Kloudless.stop($("#auth-button"))
 
 Here are some example apps using the authenticator:
 
-* JSFiddle example: https://jsfiddle.net/vinodchandru/4f8nsy68/embedded/
+* JSBin example: https://output.jsbin.com/defekug
 * Kloudless Interactive Docs: https://developers.kloudless.com/interactive-docs
 * https://github.com/vinodc/cloud-text-editor
 

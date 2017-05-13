@@ -193,17 +193,36 @@
 
   /**
    * Turn an element into a widget
-   * See ./make-widget-test.js for example usage
    *
-   * @param  Element  element  The element to turn into a widget
-   * @param  Object   params   A hash of parameters to encode into the GET querystring
-   * @param  Function callback  A response handler of signature function(err, result)
+   * Overloaded forms:
+   *
+   * First:
+   * @param  Element  element   The element to turn into a widget and set a click handler
+   *                            on to launch.
+   * @param  Object   params    A hash of parameters to encode into the GET querystring
+   * @param  Function callback  A response handler of signature function(result)
+   *
+   * Second, to not auto-launch the authenticator:
+   *
+   * @param  Object   params    A hash of parameters to encode into the GET querystring
+   * @param  Function callback  A response handler of signature function(result)
    */
   window.Kloudless.authenticator = function(element, params, callback) {
     addIframe();
 
     if (window.jQuery !== undefined && element instanceof window.jQuery) {
       element = element.get(0);
+    }
+
+    if (!(element instanceof Element)) {
+      if (callback) {
+        throw new Error("'element' must be an Element or jQuery object.");
+      }
+
+      // Shift arguments right once.
+      callback = params;
+      params = element;
+      element = null;
     }
 
    if (!params.client_id && !params.app_id) {
@@ -276,7 +295,8 @@
       }
     };
 
-    if (window.Kloudless._authenticators_by_element[element.outerHTML] !== undefined) {
+    if (element &&
+        window.Kloudless._authenticators_by_element[element.outerHTML] !== undefined) {
       window.Kloudless.stop(element);
     }
 
@@ -284,8 +304,15 @@
       clickHandler: clickHandler,
       callback: callback,
     };
-    window.Kloudless._authenticators_by_element[element.outerHTML] = requestId
-    element.addEventListener('click', clickHandler);
+
+    if (element) {
+      window.Kloudless._authenticators_by_element[element.outerHTML] = requestId
+      element.addEventListener('click', clickHandler);
+    }
+
+    return {
+      launch: clickHandler,
+    };
   };
 
   /**

@@ -214,7 +214,7 @@
       element = element.get(0);
     }
 
-    if (!(element instanceof Element)) {
+    if (element && !(element instanceof Element)) {
       if (callback) {
         throw new Error("'element' must be an Element or jQuery object.");
       }

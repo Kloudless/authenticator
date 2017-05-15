@@ -40,20 +40,25 @@ OAuth access token as it is not trusted.
 For developers using the older Kloudless Authentication mechanism (Authenticator v0.1),
 please see the [Migration Guide](#migration-guide) below on how to migrate to this version.
 
-### authenticator
+### Kloudless.authenticator
 
 ```javascript
-Kloudless.authenticator(element, params, callback);
+let auth = Kloudless.authenticator(element, params, callback);
 ```
 
-The **authenticator** method sets a click listener on an element to trigger the
-Kloudless authentication pop-up. It accepts the following required arguments:
+The **authenticator** method can set up a click handler on an element to trigger
+the Kloudless authentication pop-up. Alternatively, you may launch the pop-up
+programmatically from the returned authenticator object.
 
-* `element`  
+The **authenticator** method accepts the following arguments in order:
+
+* `element`  _(Optional)_  
   `element` specifies the element you want to set the listener on. This can be
   a DOM element or a jQuery object that references a single DOM element.
+  This may be omitted if you wish to launch the authentication pop-up manually
+  rather than auto-launch it when `element` is clicked.
 
-* `params`  
+* `params`  _(Required)_  
   `params` specifies a map of query parameters to include with the OAuth request.
   At a minimum, this must include your Kloudless application ID as the client ID.
   An error is thrown if this is not provided.
@@ -80,7 +85,7 @@ Kloudless authentication pop-up. It accepts the following required arguments:
   Your application's App ID is available on the App Details page in the
   [Developer Portal](https://developers.kloudless.com/applications/*/details).
 
-* `callback`  
+* `callback`  _(Required)_  
   `callback` specifies a function which is passed a `result` object with the
   response to the OAuth 2.0 Out-of-band flow. `result` contains the access token
   obtained via the OAuth flow, as well as the metadata of the
@@ -106,42 +111,59 @@ Kloudless authentication pop-up. It accepts the following required arguments:
   requests. Otherwise, a malicious user could spoof the account data without
   your application's knowledge.
 
-##### Example Usage
+
+### Kloudless.stop
+
+```javascript
+Kloudless.stop(element);
+```
+**stop** stops further click events on an element from triggering the
+Kloudless authentication pop-up. Only used when the authenticator is
+configured to auto-launch when an element is clicked.
+
+
+### obj.launch
+
+```javascript
+auth.launch();
+```
+
+**launch** launches the pop-up for a configured authenticator object.
+
+
+## Example Usage
 
 [View a JSBin example of the Authenticator in action here.](https://output.jsbin.com/defekug)
 
 Here is a slightly different example:
 
 ```javascript
-var e = document.getElementById("auth-button");
+let e = document.getElementById("auth-button");
 
 // You can also use jQuery:
 e = $('#auth-button');
 
-Kloudless.authenticator(e, {
+let config = {
     'client_id': 'oeD8Kzi8oN2uHvBALivVA_3zlo2OhL5Ja6YtfBrtKLA',
-}, function (result) {
+};
+
+let callback = function (result) {
     if (result.error) {
         console.error('An error occurred:', result.error);
         return;
     }
     console.log('Yay! I now have a newly authenticated', result.account.service,
         'account with ID', result.account.id);
-});
-```
+};
 
-### stop
+// To configure the authenticator pop-up to launch when the button is clicked:
+let auth = Kloudless.authenticator(e, config, callback);
 
-```javascript
-Kloudless.stop(element);
-```
-**stop** stops further click events on an element from triggering the
-Kloudless authentication pop-up.
+// To remove the click handler from the button:
+Kloudless.stop(e);
 
-##### Example Usage
-
-```javascript
-Kloudless.stop($("#auth-button"))
+// To launch programmatically:
+auth.launch();
 ```
 
 ## Example apps
@@ -235,20 +257,6 @@ The result will be at `build/kloudless.authenticator.min.js`.
 If you have discovered a security vulnerability with this library or any other
 part of Kloudless, we appreciate your help in disclosing it to us privately by
 emailing security@kloudless.com.
-
-## To Do
-### Features
-* Make it object-oriented.
-* Add method to allow user to manually make auth pop-up appear.
-* Allow parameters to be configurable without rebinding.
-* Allow authenticator to skip account data retrieval for efficiency purposes.
-
-### Testing
-* Karma + Jasmine test suite.
-
-### Bugfixes
-* Error checking for invalid parameters.
- * A null/undefined element breaks the library.
 
 ## Support
 

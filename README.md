@@ -106,7 +106,7 @@ The **authenticator** method accepts the following arguments in order:
 
   **Security Requirement:**
   If you are transferring this information to your backend, be sure to
-  [verify](https://gist.github.com/vinodc/e73868b42e36bf0166d7#verify-the-token)
+  [verify](https://developers.kloudless.com/docs/v0/authentication#header-verify-the-token-1)
   the token on your backend, especially if you use the Kloudless API Key for
   requests. Otherwise, a malicious user could spoof the account data without
   your application's knowledge.

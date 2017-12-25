@@ -32,22 +32,24 @@
   }
 
   window.addEventListener('message', function(message) {
-    var ns = "kloudless:";
+    var namespace = "kloudless:";
 
     if (debug) {
       console.log('[DEBUG] Message received', message);
+    }
+
+    // check if message has kloudless namespace
+    if (typeof(message.data) !== "string" || message.data.indexOf(namespace) !== 0) {
+      // if the message is from other app, ignore it
+      return;
     }
 
     if (message.origin !== window.Kloudless.baseUrl) {
       console.log('[ERROR] Origin mismatch:', message);
       return;
     }
-    else if (message.data.indexOf(ns) !== 0) {
-      console.log('[ERROR] Namespace mismsatch:', message);
-      return;
-    }
 
-    var contents = JSON.parse(message.data.substring(ns.length));
+    var contents = JSON.parse(message.data.substring(namespace.length));
     if (contents.type != 'authentication') {
         console.log('[ERROR] Incorrect content type:', message);
       return;

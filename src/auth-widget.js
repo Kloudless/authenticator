@@ -2,6 +2,7 @@
  * Turns an element into a widget, which opens up a verification popup and gives it event listeners.
  */
 'use strict'
+import './polyfills'
 
 // Uglify takes care of this and verifies it when it's true, otherwise getting rid of it.
 const debug = DEBUG && true;

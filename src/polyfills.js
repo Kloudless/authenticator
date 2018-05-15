@@ -2,19 +2,23 @@
  * Trimmed addEventListener polyfill for IE8 and below.
  * See MDN @ https://developer.mozilla.org/en-US/docs/Web/API/Window.postMessage
  */
-'use strict';
+
 
 if (!window.Event.prototype.preventDefault) {
-  window.Event.prototype.preventDefault = function () {
+  window.Event.prototype.preventDefault = function preventDefault() {
     this.returnValue = false;
   };
 }
 if (!Element.prototype.addEventListener) {
-  let eventListeners = [];
+  const eventListeners = [];
 
-  const addEventListener = function (type, listener /*, useCapture (will be ignored) */) {
+  const addEventListener = function addEventListener(
+    type,
+    listener,
+    /*  useCapture (will be ignored) */
+  ) {
     const self = this;
-    const wrapper = function (e) {
+    const wrapper = function wrapper(e) {
       e.target = e.srcElement;
       e.currentTarget = self;
       if (listener.handleEvent) {
@@ -23,23 +27,28 @@ if (!Element.prototype.addEventListener) {
         listener.call(self, e);
       }
     };
-    this.attachEvent('on' + type, wrapper);
+    this.attachEvent(`on${type}`, wrapper);
     eventListeners.push({
       object: this,
-      type: type,
-      listener: listener,
-      wrapper: wrapper
+      type,
+      listener,
+      wrapper,
     });
   };
-  const removeEventListener = function (type, listener /*, useCapture (will be ignored) */) {
+  const removeEventListener = function removeEventListener(
+    type,
+    listener,
+    /* useCapture (will be ignored) */
+  ) {
     let counter = 0;
     while (counter < eventListeners.length) {
       const eventListener = eventListeners[counter];
-      if (eventListener.object == this && eventListener.type == type && eventListener.listener == listener) {
-        this.detachEvent('on' + type, eventListener.wrapper);
+      if (eventListener.object === this && eventListener.type === type
+          && eventListener.listener === listener) {
+        this.detachEvent(`on${type}`, eventListener.wrapper);
         break;
       }
-      ++counter;
+      counter += 1;
     }
   };
   Element.prototype.addEventListener = addEventListener;

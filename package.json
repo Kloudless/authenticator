@@ -5,7 +5,8 @@
   "main": "src/auth-widget.js",
   "scripts": {
     "test": "node test/server.js",
-    "build": "webpack --config build-config/webpack.prod.conf.js"
+    "build": "webpack --config build-config/webpack.prod.conf.js",
+    "lint": "eslint --ext .js src test"
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,14 @@
   "homepage": "https://github.com/kloudless/authenticator.js#readme",
   "devDependencies": {
     "babel": "^6.23.0",
+    "babel-eslint": "^8.2.3",
     "babel-preset-env": "^1.6.1",
     "body-parser": "^1.15.0",
     "del": "^2.2.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.11.0",
     "express": "^4.13.4",
     "jade": "^1.11.0",
     "method-override": "^2.3.5",

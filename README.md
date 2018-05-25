@@ -244,11 +244,12 @@ An easy way to do this is by just building the file with the correct base URL.
 Build a debug version to enable sourcemaps:
 
     npm install
-    gulp --debug
+    npm run build
 
-To build pointing to a custom API server, use the `--url` option:
+To build pointing to a custom API server, export the environment variable
+ `BASE_URL`:
 
-    gulp --url=http://custom-api-server:8080
+    BASE_URL=http://custom-api-server:8080 npm run build
 
 The result will be at `build/kloudless.authenticator.min.js`.
 

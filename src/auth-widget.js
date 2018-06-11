@@ -13,7 +13,7 @@ import './polyfills';
 // eslint-disable-next-line no-undef
 const debug = DEBUG && true;
 // eslint-disable-next-line no-undef
-const baseUrl = BASE_URL;
+let baseUrl = BASE_URL;
 const apiVersion = 'v1';
 const authenticators = {};
 const authenticatorsByElement = {};
@@ -283,6 +283,10 @@ const stop = function stop(element) {
  */
 const authenticator = function authenticator(element, params, callback) {
   /* eslint-disable no-param-reassign */
+  if (params.baseUrl) {
+    ({ baseUrl } = params);
+  }
+
   addIframe();
 
   if (window.jQuery !== undefined && element instanceof window.jQuery) {
@@ -405,5 +409,5 @@ export default {
   authenticator,
   stop,
   apiVersion,
-  baseUrl,
+  baseUrl: () => baseUrl,
 };

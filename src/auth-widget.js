@@ -283,9 +283,7 @@ const stop = function stop(element) {
  */
 const authenticator = function authenticator(element, params, callback) {
   /* eslint-disable no-param-reassign */
-  if (params.baseUrl) {
-    ({ baseUrl } = params);
-  }
+  ({ baseUrl } = window.Kloudless);
 
   addIframe();
 
@@ -409,5 +407,5 @@ export default {
   authenticator,
   stop,
   apiVersion,
-  baseUrl: () => baseUrl,
+  baseUrl,
 };

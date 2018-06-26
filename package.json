@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node test/server.js",
     "build": "webpack --config build-config/webpack.prod.conf.js",
+    "dev": "DEBUG=true webpack --config build-config/webpack.prod.conf.js",
     "lint": "eslint --ext .js src test"
   },
   "repository": {

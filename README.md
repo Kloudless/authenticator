@@ -240,18 +240,22 @@ Then navigate to `localhost:3000` and click the button to test if it works.
 An easy way to do this is by just building the file with the correct base URL.
 
 ### Building
-
-Build a debug version to enable sourcemaps:
+Require node version > v6.14.3  
+Build a production version:
 
     npm install
     npm run build
+    
+Build a dev version with debug info:
+     
+    npm run dev    
 
 To build pointing to a custom API server, export the environment variable
  `BASE_URL`:
 
     BASE_URL=http://custom-api-server:8080 npm run build
 
-The result will be at `build/kloudless.authenticator.min.js`.
+The result will be at `build/kloudless-authenticator.js` and `build/kloudless-authenticator.min.js`.
 
 ### Security Vulnerabilities
 

@@ -240,13 +240,13 @@ Then navigate to `localhost:3000` and click the button to test if it works.
 An easy way to do this is by just building the file with the correct base URL.
 
 ### Building
-Require node version > v6.14.3  
+Requires node version > v6.14.3  
 Build a production version:
 
     npm install
     npm run build
     
-Build a dev version with debug info:
+Build a dev version with debug logging:
      
     npm run dev    
 

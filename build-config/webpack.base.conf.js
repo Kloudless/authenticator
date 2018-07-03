@@ -28,7 +28,7 @@ const webpackConfig = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'DEBUG': false,
+      'DEBUG': config.build.debug || false,
       'BASE_URL': config.build.base_url || JSON.stringify('https://api.kloudless.com')
     })
   ]

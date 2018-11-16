@@ -2,7 +2,7 @@
 
 The Kloudless Authenticator is a JavaScript library that authenticates users
 to cloud services and connects their accounts to your
-[Kloudless](https://developers.kloudless.com) app.
+[Kloudless](https://kloudless.com) project.
 
 The library lets you open a pop-up that allows the user to choose a cloud
 service to connect. The pop-up closes once the account has been
@@ -18,7 +18,7 @@ to obtain an OAuth access token. The token is verified and used to obtain
 information on the account that was connected. This data is then returned to
 your application via a callback.
 
-See the [Kloudless Docs](https://developers.kloudless.com/docs#authentication)
+See the [Kloudless Docs](https://developers.kloudless.com/docs/latest/authentication)
 for other ways to authenticate users.
 
 ## Usage
@@ -89,7 +89,7 @@ The **authenticator** method accepts the following arguments in order:
   `callback` specifies a function which is passed a `result` object with the
   response to the OAuth 2.0 Out-of-band flow. `result` contains the access token
   obtained via the OAuth flow, as well as the metadata of the
-  [account](https://developers.kloudless.com/docs#accounts)
+  [account](https://developers.kloudless.com/docs/latest/authentication#accounts)
   that was connected:
 
       {
@@ -106,7 +106,7 @@ The **authenticator** method accepts the following arguments in order:
 
   **Security Requirement:**
   If you are transferring this information to your backend, be sure to
-  [verify](https://developers.kloudless.com/docs/v0/authentication#header-verify-the-token-1)
+  [verify](https://developers.kloudless.com/docs/latest/authentication#header-verify-the-token)
   the token on your backend, especially if you use the Kloudless API Key for
   requests. Otherwise, a malicious user could spoof the account data without
   your application's knowledge.
@@ -266,5 +266,4 @@ emailing security@kloudless.com.
 ## Support
 
 Feel free to contact us at support@kloudless.com with any feedback or
-questions. Other methods to contact us are listed
-[here](https://developers.kloudless.com/docs#getting-help).
+questions.

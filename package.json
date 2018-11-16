@@ -1,7 +1,7 @@
 {
-  "name": "kloudless-authenticator",
+  "name": "@kloudless/authenticator",
   "version": "1.0.0",
-  "description": "Kloudless Authenticator JS library",
+  "description": "The Kloudless Authenticator JS library prompts your users to connect their accounts to your Kloudless project via a pop-up.",
   "main": "src/auth-widget.js",
   "scripts": {
     "test": "node test/server.js",
@@ -17,10 +17,11 @@
     "kloudless",
     "authenticator"
   ],
-  "author": "Kloudless, Inc.",
+  "author": "Kloudless <hello@kloudless.com> (https://kloudless.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kloudless/authenticator.js/issues"
+    "url": "https://github.com/kloudless/authenticator.js/issues",
+    "email": "support@kloudless.com"
   },
   "homepage": "https://github.com/kloudless/authenticator.js#readme",
   "devDependencies": {

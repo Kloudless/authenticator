@@ -4,9 +4,6 @@
  * it event listeners.
  */
 
-
-import './polyfills';
-
 // Uglify takes care of this and verifies it when it's true, otherwise getting
 // rid of it.
 
@@ -282,8 +279,10 @@ const stop = function stop(element) {
  * @param  Function callback  A response handler of signature function(result)
  */
 const authenticator = function authenticator(element, params, callback) {
-  /* eslint-disable no-param-reassign */
-  ({ baseUrl } = window.Kloudless);
+  if (window.Kloudless && window.Kloudless.baseUrl) {
+    /* eslint-disable no-param-reassign */
+    ({ baseUrl } = window.Kloudless);
+  }
 
   addIframe();
 

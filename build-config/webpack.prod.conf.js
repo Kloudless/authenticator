@@ -4,6 +4,7 @@ const webpack = require('webpack')
 
 const baseWebpackConfig = require('./webpack.base.conf')
 const libraryName = 'Kloudless'
+const libraryPropertyName = 'authenticator'
 const fileName = 'kloudless-authenticator'
 
 function resolve (dir) {
@@ -14,7 +15,7 @@ const libWebpackConfig = Object.assign({}, baseWebpackConfig, {
   output: {
     path: resolve('build'),
     filename: fileName + '.js',
-    library: libraryName,
+    library: [libraryName, libraryPropertyName],
     libraryTarget: 'umd',
     libraryExport: 'default',
     umdNamedDefine: true
@@ -25,7 +26,7 @@ const minLibWebpackConfig = Object.assign({}, baseWebpackConfig, {
   output: {
     path: resolve('build'),
     filename: fileName + '.min.js',
-    library: libraryName,
+    library: [libraryName, libraryPropertyName],
     libraryTarget: 'umd',
     libraryExport: 'default',
     umdNamedDefine: true

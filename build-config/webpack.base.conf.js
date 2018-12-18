@@ -10,7 +10,7 @@ function resolve (dir) {
 
 
 const webpackConfig = {
-  entry: './src/auth-widget.js',
+  entry: './src/webpack-index.js',
   module: {
     rules: [
       {

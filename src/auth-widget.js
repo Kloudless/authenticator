@@ -397,14 +397,35 @@ const authenticator = function authenticator(element, params, callback) {
   };
 };
 
-/*
- * Helper methods
- */
 
-
-export default {
+const defaultExport = {
   authenticator,
   stop,
   apiVersion,
   baseUrl,
 };
+
+/* eslint-disable prefer-arrow-callback */
+setTimeout(function bindKloudless() {
+  /** If this script is imported via script tag, assign properties into
+   * window.Kloudless
+   */
+  if (window.Kloudless && window.Kloudless.authenticator) {
+    // avoid using Object.assign
+    Object.keys(defaultExport).forEach(function assign(key) {
+      if (!window.Kloudless[key]) {
+        window.Kloudless[key] = defaultExport[key];
+      }
+    });
+  }
+}, 0);
+
+/*
+ * Helper methods
+ */
+
+// used in webpack build
+export const auth = authenticator;
+
+// use this when imported as a ES6 module
+export default defaultExport;

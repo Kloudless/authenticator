@@ -214,7 +214,10 @@ const wrapOAuthCallback = function wrapOAuthCallback(callback, state) {
 
     if (!data.access_token) { return callback(data); }
 
-    const headers = { Authorization: `Bearer ${data.access_token}` };
+    const headers = {
+      Authorization: `Bearer ${data.access_token}`,
+      'X-Kloudless-Source': 'authenticator',
+    };
 
     // Verify token, and obtain account data.
     load(

@@ -2,18 +2,14 @@
 
 const express = require('express');
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
 const path = require('path');
 
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.use(morgan('dev'));
-app.use(bodyParser());
-app.use(methodOverride());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 
 app.use(express.static(path.join(__dirname, 'public')));

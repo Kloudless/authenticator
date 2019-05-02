@@ -12,10 +12,10 @@ successfully connected.
 
 ## Table of contents
 
-* [How it works](#how-it-works)
+* [How it Works](#how-it-works)
 * [Usage](#usage)
-  * [import from script tag](#import-from-script-tag)
-  * [import from an ES6 module](#import-from-an-es6-module)
+  * [Importing from a Script Tag](#importing-from-a-script-tag)
+  * [Importing from an ES6 Module](#importing-from-an-es6-module)
 * [Global Options](#global-options)
 * [Options](#options)
 * [Methods](#methods)
@@ -24,6 +24,7 @@ successfully connected.
   * [authObj.launch()](#authobjlaunch)
   * [auth.setGlobalOptions()](#authsetglobaloptions)
   * [auth.getGlobalOptions()](#authgetglobaloptions)
+* [Authenticator with React](#authenticator-with-react)
 * [Authenticator with Vue](#authenticator-with-vue)
 * [Example apps](#example-apps)
 * [Migration Guide](#migration-guide)
@@ -36,7 +37,7 @@ successfully connected.
   * [Security Vulnerabilities](#security-vulnerabilities)
 * [Support](#support)
 
-## How it works
+## How it Works
 
 The library uses the
 [Kloudless OAuth 2.0 Out-of-band flow](https://gist.github.com/vinodc/e73868b42e36bf0166d7)
@@ -59,7 +60,7 @@ For developers using the older Kloudless Authentication mechanism
 (Authenticator v0.1/v1.0), please see the [Migration Guide](#migration-guide)
 below on how to migrate to this version.
 
-### import from script tag
+### Importing from a Script Tag
 
 Embedding the Kloudless JavaScript library will expose a global
 `Kloudless.auth` object. The JS file is currently hosted on S3 and can
@@ -107,7 +108,7 @@ be embedded in your page using this tag:
 
 [View a JSBin example of the Authenticator in action here.](https://output.jsbin.com/defekug)
 
-### import from an ES6 module
+### Importing from an ES6 Module
 
 Install from NPM:
 ```
@@ -137,14 +138,15 @@ authObj.launch();
 
 ## Global Options
 
-The settings are applied to all instances of the Authenticator.
+These settings are applied to all instances of the Authenticator.
 Here is the list of global options:
 
 - `baseUrl`: the API server URL
 - `debug`: `true` to enable debug mode; otherwise `false`
 
-By default, `baseUrl` is Kloudless API server URL and debug mode is disabled.
-You can change them by using [auth.setGlobalOptions()](#authsetglobaloptions).
+By default, `baseUrl` is set to the Kloudless API server URL and debug mode is
+disabled. You can change them by using 
+[auth.setGlobalOptions()](#authsetglobaloptions).
 
 ## Options
 
@@ -154,7 +156,7 @@ An error is thrown if this is not provided.
 
 You may also find it valuable to provide a `scope` that determines which services
 the user can choose from to connect. If only a single service is available, the
-service selection screen is skipped and the user directly proceeds to connecting
+service selection screen is skipped and the user directly proceeds to connect
 that service. `scope` can either be an Array of different scopes, or a
 space-delimited string. It will be converted into a space-delimited string if
 it is an Array. Refer to the docs for more information on Scopes.
@@ -249,9 +251,8 @@ auth.setGlobalOptions({
 });
 ```
 
-Call this method to set global options.
-The parameter should be an object that contains any of the global options.
-Only the present option would be updated.
+**setGlobalOptions** sets the [global options](#global-options).
+The input parameter should be an object with corresponding global options keys.
 
 ### auth.getGlobalOptions()
 
@@ -259,13 +260,15 @@ Only the present option would be updated.
 auth.getGlobalOptions();
 ```
 
-Call this method to get the global option.
+**getGlobalOptions** returns the [global options](#global-options).
 
+## Authenticator with React
 
+See [Authenticator with React](./README.react.md) for details.
 
 ## Authenticator with Vue
 
-See [Authenticator with Vue](./README.vue.md)
+See [Authenticator with Vue](./README.vue.md) for details.
 
 ## Example apps
 
@@ -314,9 +317,9 @@ Here are the changes needed:
 
 ### From v1.0 to v1.1
 
-For script tag usage, we change exposing target from `window.Kloudless` to
+For script tag usage, change the exposing target from `window.Kloudless` to
 `window.Kloudless.auth` to better scope our UI tools.
-All the exports under `window.Kloudless` are deprecated.
+All the exports under `window.Kloudless` are now deprecated.
 
 Here are the changes from v1.0 to v1.1:
 
@@ -357,8 +360,8 @@ purposes.
 Then navigate to `localhost:3000` and click the button to test if it works.
 
 Use [auth.setGlobalOptions()](#authsetglobaloptions) to set a URI that directs
-to the API server.
-Another way to do this is by building the file with the correct base URL.
+to the API server. This can also be done by building the file with the 
+correct base URL.
 
 ### Building
 Requires node version > v6.14.3  
@@ -369,7 +372,7 @@ Build a production version:
     
 Build a dev version with debug logging:
      
-    npm run dev    
+    npm run dev
 
 To build pointing to a custom API server, expose the environment variable
 `BASE_URL`.

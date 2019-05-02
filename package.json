@@ -11,7 +11,8 @@
     "clean": "rm -rf dist/* && rm -f build/*",
     "dev": "DEBUG=true npm run build:js",
     "lint": "eslint --ext .js src test",
-    "storybook:vue": "npm run storybook --prefix ./storybook-vue"
+    "storybook:vue": "npm run storybook --prefix ./storybook-vue",
+    "storybook:react": "npm run storybook --prefix ./storybook-react"
   },
   "repository": {
     "type": "git",
@@ -46,11 +47,16 @@
     "eslint-plugin-jsx-a11y": "6.2.1",
     "eslint-plugin-react": "7.12.4",
     "express": "4.16.4",
-    "jade": "1.11.0",
     "method-override": "3.0.0",
     "morgan": "1.9.1",
+    "react": "16.8.2",
+    "react-dom": "16.8.2",
     "stylus": "0.54.5",
     "webpack": "4.29.4",
     "webpack-cli": "3.2.3"
+  },
+  "dependencies": {
+    "hoist-non-react-statics": "^3.3.0",
+    "prop-types": "15.7.2"
   }
 }

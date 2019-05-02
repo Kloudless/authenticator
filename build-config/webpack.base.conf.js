@@ -1,15 +1,12 @@
 const path = require('path');
-const webpack = require('webpack');
-
-const config = require('../config');
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir);
 }
 
-
 const webpackConfig = {
-  entry: './src/webpack-index.js',
+  entry: './src/browser/webpack-index.js',
+  mode: 'development',
   module: {
     rules: [
       {
@@ -25,12 +22,6 @@ const webpackConfig = {
       },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      DEBUG: config.build.debug || false,
-      BASE_URL: config.build.base_url || JSON.stringify('https://api.kloudless.com'),
-    }),
-  ],
 };
 
 module.exports = webpackConfig;

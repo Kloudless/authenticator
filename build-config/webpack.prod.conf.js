@@ -1,46 +1,35 @@
 const path = require('path');
-const webpack = require('webpack');
-
 const baseWebpackConfig = require('./webpack.base.conf');
 
-const libraryName = 'Kloudless';
-const libraryPropertyName = 'authenticator';
 const fileName = 'kloudless-authenticator';
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir);
 }
 
-const libWebpackConfig = Object.assign({}, baseWebpackConfig, {
+const prodBaseWebpackConfig = {
+  ...baseWebpackConfig,
+  mode: 'production',
+};
+
+const libWebpackConfig = {
+  ...prodBaseWebpackConfig,
   output: {
     path: resolve('build'),
     filename: `${fileName}.js`,
-    library: [libraryName, libraryPropertyName],
-    libraryTarget: 'umd',
-    libraryExport: 'default',
-    umdNamedDefine: true,
   },
-});
+  optimization: {
+    minimize: false,
+  },
+};
 
-const minLibWebpackConfig = Object.assign({}, baseWebpackConfig, {
+const minLibWebpackConfig = {
+  ...prodBaseWebpackConfig,
   output: {
     path: resolve('build'),
     filename: `${fileName}.min.js`,
-    library: [libraryName, libraryPropertyName],
-    libraryTarget: 'umd',
-    libraryExport: 'default',
-    umdNamedDefine: true,
   },
-});
-
-minLibWebpackConfig.plugins = minLibWebpackConfig.plugins.concat([
-  new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false,
-    },
-    parallel: true,
-  }),
-]);
+};
 
 module.exports = [
   libWebpackConfig,

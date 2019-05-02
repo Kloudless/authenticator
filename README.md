@@ -24,6 +24,7 @@ successfully connected.
   * [authObj.launch()](#authobjlaunch)
   * [auth.setGlobalOptions()](#authsetglobaloptions)
   * [auth.getGlobalOptions()](#authgetglobaloptions)
+* [Authenticator with Vue](#authenticator-with-vue)
 * [Example apps](#example-apps)
 * [Migration Guide](#migration-guide)
   * [From v0.1 to v1.0](#from-v01-to-v10)
@@ -262,7 +263,9 @@ Call this method to get the global option.
 
 
 
+## Authenticator with Vue
 
+See [Authenticator with Vue](./README.vue.md)
 
 ## Example apps
 

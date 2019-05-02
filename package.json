@@ -5,9 +5,13 @@
   "main": "dist/auth-widget.js",
   "scripts": {
     "test": "node test/server.js",
-    "build": "webpack --config build-config/webpack.prod.conf.js",
-    "dev": "DEBUG=true npm run build",
-    "lint": "eslint --ext .js src test"
+    "build": "npm run build:js && npm run transpile",
+    "build:js": "webpack --config build-config/webpack.prod.conf.js",
+    "transpile": "babel src/ -d dist/ --ignore src/browser",
+    "clean": "rm -rf dist/* && rm -f build/*",
+    "dev": "DEBUG=true npm run build:js",
+    "lint": "eslint --ext .js src test",
+    "storybook:vue": "npm run storybook --prefix ./storybook-vue"
   },
   "repository": {
     "type": "git",

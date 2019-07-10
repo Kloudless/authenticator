@@ -2,14 +2,14 @@
 
 This is a thin React wrapper for the
 [Kloudless Authenticator](https://github.com/Kloudless/authenticator).
-The following components are provided to add the Authenticator to any React app:
+We provide the following components to add the Authenticator to any React app:
 
 - `AuthButton`:
   A button component that will launch the Authenticator when clicked.
 - `createAuthButton`:
-  A Higher-Order Component 
-  ([HOC](https://facebook.github.io/react/docs/higher-order-components.html)) 
-  that accepts your custom component and wraps it in a 
+  A Higher-Order Component
+  ([HOC](https://facebook.github.io/react/docs/higher-order-components.html))
+  that accepts your custom component and wraps it in a
   new one that launches the Authenticator.
 
 Supports React v15, v16.
@@ -81,10 +81,11 @@ Authenticator.
 
 It will add a transparent component layer that will hack the `onClick` event
 handler. The hacked `onClick` event handler will be passed to the wrapped
-component and launch the Authenticator when being called.
+component and will launch the Authenticator when called.
 
-All the properties except `options` and the [event handlers](#event-handlers)
-passed to the new component will be passed to the wrapped component.
+All the properties and the [event handlers](#event-handlers) passed to the new
+component will be passed to the wrapped component except for the `options`
+property.
 
 #### Example
 
@@ -115,34 +116,34 @@ ReactDOM.render(
 
 ## Props
 
-- `options` _(Required)_  
+- `options` _(Required)_
   OAuth config object.
-- `options.client_id` _(Required)_  
+- `options.client_id` _(Required)_
   The Kloudless application ID.
-- `options.scope` _(Optional)_  
+- `options.scope` _(Optional)_
   Used to determine which services the user can choose from to connect.
-  Could either be an Array of different scopes, or a space-delimited string.  
+  Could either be an Array of different scopes, or a space-delimited string.
   ex: `"any.calendar any.storage"`, `["any.calendar", "any.storage"]`
-- `options.extra_data` _(Optional)_  
+- `options.extra_data` _(Optional)_
   A URL-encoded JSON object containing data used to pre-fill default values for
   fields in the Kloudless authentication forms.
   ex: the domain of a WebDAV server.
-- `options.oob_loading_delay` _(Optional)_  
+- `options.oob_loading_delay` _(Optional)_
   Indicates the number of milliseconds the loading spinner will last on the
   callback page before revealing the token. Defaults to 2000.
-- `title` _(Optional)_  
+- `title` _(Optional)_
   The text shows on the `AuthButton`.
   Defaults to `"Connect Account"`.
-- `className` _(Optional)_  
+- `className` _(Optional)_
   CSS classes that apply to `AuthButton`.
   Defaults to an empty string.
-- `disabled` _(Optional)_  
+- `disabled` _(Optional)_
   `true` to disable `AuthButton`.
   Defaults to `false`.
 
 ## Event Handlers
 
-- `onSuccess` _(Required)_  
+- `onSuccess` _(Required)_
   Called when authentication success. The event parameter object contains
   the access token obtained via the OAuth flow, as well as the metadata of the
   connected [account](https://developers.kloudless.com/docs/latest/authentication#accounts)
@@ -160,7 +161,7 @@ ReactDOM.render(
       }
   }
   ```
-- `onError` _(Optional)_  
+- `onError` _(Optional)_
   Called when authentication fails. The event parameter object contains
   error information:
   ```javascript
@@ -170,7 +171,7 @@ ReactDOM.render(
     'state': "7691344675"
   }
   ```
-- `onClick` _(Optional)_  
+- `onClick` _(Optional)_
   Called when the component is clicked.
 
 ## Set/Get Global Options

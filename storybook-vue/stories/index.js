@@ -81,7 +81,7 @@ stories.add('example', () => ({
           You can play with the buttons below and see how it works in right panel:
           <li>
             <strong>Knobs </strong>
-            edit props (ex: options.scope, options.client_id)
+            edit props (e.g. options.scope, options.client_id)
           </li>
           <li>
             <strong>Actions </strong>
@@ -89,7 +89,7 @@ stories.add('example', () => ({
           </li>
           <li>
             <strong>* </strong>
-            We use bootstrap CSS here for demonstration
+            We use Bootstrap CSS here for demonstration
           </li>
         </ul>
       </div>

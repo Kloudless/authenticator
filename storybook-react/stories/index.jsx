@@ -51,7 +51,7 @@ stories.add('example', () => {
         You can play with the buttons below and see how it works in right panel:
         <li>
           <strong>Knobs </strong>
-          edit props (ex: config.scope, config.client_id)
+          edit props (e.g. config.scope, config.client_id)
         </li>
         <li>
           <strong>Actions </strong>
@@ -59,7 +59,7 @@ stories.add('example', () => {
         </li>
         <li>
           <strong>* </strong>
-          We use bootstrap CSS here for demonstration
+          We use Bootstrap CSS here for demonstration
         </li>
       </ul>
       <h4>AuthButton Example</h4>

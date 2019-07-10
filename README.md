@@ -51,7 +51,7 @@ for other ways to authenticate users.
 ## Usage
 
 Before you can use the Authenticator, You **must** add the domain of the site
-you are including the JS file on in your app's list of 
+you are including the JS file on in your app's list of
 [Trusted Domains](https://developers.kloudless.com/applications/*/details#trusted-domains).
 e.g. "google.com" or "localhost:8000". Otherwise, your web page cannot receive the
 OAuth access token as it is not trusted.
@@ -71,15 +71,15 @@ be embedded in your page using this tag:
  src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.js"></script>
 
 <script>
-  let e = document.getElementById("auth-button");
-
-  // You can also use jQuery:
+  // Basic Example
   e = $('#auth-button');
 
+  // This is your Application ID found in the Kloudless Developer Portal
   let options = {
     'client_id': 'oeD8Kzi8oN2uHvBALivVA_3zlo2OhL5Ja6YtfBrtKLA',
   };
 
+  // Create an event handler to process the result
   let callback = function (result) {
     if (result.error) {
       console.error('An error occurred:', result.error);
@@ -89,20 +89,8 @@ be embedded in your page using this tag:
       'account with ID', result.account.id);
   };
 
-  // To set global options
-  Kloudless.auth.setGlobalOptions({
-    baseUrl: 'https://api.kloudless.com',
-    debug: true,
-  });
-
-  // To configure the authenticator pop-up to launch when the button is clicked:
-  let auth = Kloudless.auth.authenticator(e, options, callback);
-
-  // To remove the click handler from the button:
-  Kloudless.auth.stop(e);
-
-  // To launch programmatically:
-  auth.launch();
+  // Launch the Authenticator when the button is clicked
+  Kloudless.auth.authenticator(e, options, callback);
 </script>
 ```
 
@@ -118,23 +106,21 @@ npm install @kloudless/authenticator
 ```javascript
 import auth from '@kloudless/authenticator';
 
-// To set global options
-auth.setGlobalOptions({
-  baseUrl: 'https://api.kloudless.com',
-  debug: true,
-});
+// Basic Example
+let element = $('#auth-button');
 
+let options = {
+  'client_id': 'oeD8Kzi8oN2uHvBALivVA_3zlo2OhL5Ja6YtfBrtKLA',
+};
+
+// Create an event handler to log the result
 const callback = (result) => console.log(result);
 
-// To configure the authenticator pop-up to launch when the button is clicked:
-let authObj = auth.authenticator(element, options, callback);
-
-// To remove the click handler from the button:
-auth.stop(element);
-
-// To launch programmatically:
-authObj.launch();
+// Launch the Authenticator when the button is clicked
+auth.authenticator(element, options, callback);
 ```
+
+[View a JSBin example of the Authenticator in action here.](https://output.jsbin.com/defekug)
 
 ## Global Options
 
@@ -145,7 +131,7 @@ Here is the list of global options:
 - `debug`: `true` to enable debug mode; otherwise `false`
 
 By default, `baseUrl` is set to the Kloudless API server URL and debug mode is
-disabled. You can change them by using 
+disabled. You can change them by using
 [auth.setGlobalOptions()](#authsetglobaloptions).
 
 ## Options
@@ -190,16 +176,16 @@ programmatically from the returned authenticator object.
 
 The **authenticator** method accepts the following arguments in order:
 
-* `element`  _(Optional)_  
+* `element`  _(Optional)_
   `element` specifies the element you want to set the listener on. This can be
   a DOM element or a jQuery object that references a single DOM element.
   This may be omitted if you wish to launch the authentication pop-up manually
   rather than auto-launch it when `element` is clicked.
 
-* `options`  _(Required)_  
+* `options`  _(Required)_
   See [Options](#options)
 
-* `callback`  _(Required)_  
+* `callback`  _(Required)_
   `callback` specifies a function which is passed a `result` object with the
   response to the OAuth 2.0 Out-of-band flow. `result` contains the access token
   obtained via the OAuth flow, as well as the metadata of the
@@ -289,10 +275,10 @@ authentication flow rather than the previous authentication mechanism.
 Here are the changes needed:
 
 * Replace the previous script tag with the new one. The version has been removed
-  from the file name.  
-  Previous:  
-  `<script src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>`  
-  New:  
+  from the file name.
+  Previous:
+  `<script src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.v0.1.js"></script>`
+  New:
   `<script src="https://static-cdn.kloudless.com/p/platform/sdk/kloudless.authenticator.js"></script>`
 * The `authenticator()` method now accepts different parameters for `params`.
   See the documentation above for the current format. Here are the changes
@@ -300,10 +286,10 @@ Here are the changes needed:
   * Use `client_id` instead of `app_id`.
   * Use `scope` instead of `services`. Visit the documentation on Scopes
     to learn more.
-  * The `admin` flag has now been incorporated as a part of scopes. 
+  * The `admin` flag has now been incorporated as a part of scopes.
 * The `authenticator()` method now invokes the `callback` provided with a single
   argument that contains the response to the OAuth flow. It would previously
-  send two arguments. 
+  send two arguments.
 * The `callback` method's argument has a new format. Previously, only the
   Account ID, `id`, and the Service name, `service`, were provided.
   Now, the full response to the OAuth 2.0 flow is provided. Account data is
@@ -360,18 +346,18 @@ purposes.
 Then navigate to `localhost:3000` and click the button to test if it works.
 
 Use [auth.setGlobalOptions()](#authsetglobaloptions) to set a URI that directs
-to the API server. This can also be done by building the file with the 
+to the API server. This can also be done by building the file with the
 correct base URL.
 
 ### Building
-Requires node version > v6.14.3  
+Requires node version > v6.14.3
 Build a production version:
 
     npm install
     npm run build
-    
+
 Build a dev version with debug logging:
-     
+
     npm run dev
 
 To build pointing to a custom API server, expose the environment variable

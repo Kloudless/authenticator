@@ -24,5 +24,20 @@ build
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
 
-# IDE
+.demo
+dist
+
+# demo
+.demo
+
+# Mac
+.DS_Store
+
+# tools, IDE
 .idea
+.nvmrc
+.vscode
+yarn-error.log
+
+.npmignore
+*.tgz

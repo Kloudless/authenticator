@@ -4,13 +4,12 @@
  * it event listeners.
  */
 
-// Uglify takes care of this and verifies it when it's true, otherwise getting
-// rid of it.
+// eslint-disable-next-line no-undef
+const globalOptions = {
+  baseUrl: BASE_URL, // eslint-disable-line no-undef
+  debug: DEBUG, // eslint-disable-line no-undef
+};
 
-// eslint-disable-next-line no-undef
-const debug = DEBUG && true;
-// eslint-disable-next-line no-undef
-let baseUrl = BASE_URL;
 const apiVersion = 'v1';
 const authenticators = {};
 const authenticatorsByElement = {};
@@ -33,14 +32,14 @@ if (nav.indexOf('msie') !== -1) { // IE < 11
 
 window.addEventListener('message', (message) => {
   const namespace = 'kloudless:';
-
+  const { debug, baseUrl } = globalOptions;
   if (debug) {
     console.log('[DEBUG] Message received', message);
   }
 
   // check if message has kloudless namespace
-  if (typeof (message.data) !== 'string' ||
-      message.data.indexOf(namespace) !== 0) {
+  if (typeof (message.data) !== 'string'
+      || message.data.indexOf(namespace) !== 0) {
     // if the message is from other app, ignore it
     return;
   }
@@ -138,7 +137,11 @@ const oauthPathFromParams = function oauthPathFromParams(params) {
 };
 
 const addIframe = function addIframe() {
-  if (authenticatorIframe !== undefined) return;
+  const { baseUrl } = globalOptions;
+  if (authenticatorIframe !== undefined) {
+    authenticatorIframe.setAttribute('src', `${baseUrl}/static/iexd.html`);
+    return;
+  }
 
   const iframe = document.createElement('iframe');
   iframe.setAttribute('id', 'kloudless_iexd');
@@ -208,6 +211,7 @@ function load(url, headers, callback) {
 const wrapOAuthCallback = function wrapOAuthCallback(callback, state) {
 // eslint-disable-next-line func-names,consistent-return
   return function (data) {
+    const { baseUrl } = globalOptions;
     if (!data.state || data.state.toString() !== state.toString()) {
       return callback({ error: 'invalid_state' });
     }
@@ -271,25 +275,28 @@ const stop = function stop(element) {
  * First:
  * @param  Element  element   The element to turn into a widget and set a click
  *                            handler on to launch.
- * @param  Object   params    A hash of parameters to encode into the GET
+ * @param  Object   options   A hash of parameters to encode into the GET
  *                            querystring
  * @param  Function callback  A response handler of signature function(result)
  *
  * Second, to not auto-launch the authenticator:
  *
- * @param  Object   params    A hash of parameters to encode into the GET
+ * @param  Object   options   A hash of parameters to encode into the GET
  *                            querystring
  * @param  Function callback  A response handler of signature function(result)
  */
-const authenticator = function authenticator(element, params, callback) {
+const authenticator = function authenticator(element, options, callback) {
   if (window.Kloudless && window.Kloudless.baseUrl) {
-    /* eslint-disable no-param-reassign */
-    ({ baseUrl } = window.Kloudless);
+    // backward compatible
+    globalOptions.baseUrl = window.Kloudless.baseUrl;
   }
+
+  const { baseUrl, debug } = globalOptions;
 
   addIframe();
 
   if (window.jQuery !== undefined && element instanceof window.jQuery) {
+    // eslint-disable-next-line no-param-reassign
     element = element.get(0);
   }
 
@@ -299,22 +306,24 @@ const authenticator = function authenticator(element, params, callback) {
     }
 
     // Shift arguments right once.
-    callback = params;
-    params = element;
-    element = null;
+    callback = options; // eslint-disable-line no-param-reassign
+    options = element; // eslint-disable-line no-param-reassign
+    element = null; // eslint-disable-line no-param-reassign
   }
 
-  if (!params.client_id && !params.app_id) {
+  if (!options.client_id && !options.app_id) {
     throw new Error('An App ID is required.');
   }
 
   let path;
-  if (params.app_id) {
-    path = servicesPathFromParams(params);
+  if (options.app_id) {
+    path = servicesPathFromParams(options);
+    // eslint-disable-next-line no-param-reassign
     callback = wrapServicesCallback(callback);
   } else {
-    path = oauthPathFromParams(params);
-    callback = wrapOAuthCallback(callback, params.state);
+    path = oauthPathFromParams(options);
+    // eslint-disable-next-line no-param-reassign
+    callback = wrapOAuthCallback(callback, options.state);
   }
 
   const requestId = parseInt(Math.random() * (10 ** 10), 10);
@@ -380,8 +389,8 @@ const authenticator = function authenticator(element, params, callback) {
     }
   };
 
-  if (element &&
-    authenticatorsByElement[element.outerHTML] !== undefined) {
+  if (element
+    && authenticatorsByElement[element.outerHTML] !== undefined) {
     stop(element);
   }
 
@@ -400,35 +409,31 @@ const authenticator = function authenticator(element, params, callback) {
   };
 };
 
+function setGlobalOptions(newOption = {}) {
+  const { baseUrl, debug } = newOption;
+  if (baseUrl) {
+    // backward-compatible
+    if (window.Kloudless) {
+      window.Kloudless.baseUrl = baseUrl;
+    }
+    if (authenticatorIframe !== undefined) {
+      authenticatorIframe.setAttribute('src', `${baseUrl}/static/iexd.html`);
+    }
+    globalOptions.baseUrl = baseUrl;
+  }
+  if (debug) {
+    globalOptions.debug = debug;
+  }
+}
 
-const defaultExport = {
+function getGlobalOptions() {
+  return { ...globalOptions };
+}
+
+export default {
   authenticator,
   stop,
   apiVersion,
-  baseUrl,
+  getGlobalOptions,
+  setGlobalOptions,
 };
-
-/* eslint-disable prefer-arrow-callback */
-setTimeout(function bindKloudless() {
-  /** If this script is imported via script tag, assign properties into
-   * window.Kloudless
-   */
-  if (window.Kloudless && window.Kloudless.authenticator) {
-    // avoid using Object.assign
-    Object.keys(defaultExport).forEach(function assign(key) {
-      if (!window.Kloudless[key]) {
-        window.Kloudless[key] = defaultExport[key];
-      }
-    });
-  }
-}, 0);
-
-/*
- * Helper methods
- */
-
-// used in webpack build
-export const auth = authenticator;
-
-// use this when imported as a ES6 module
-export default defaultExport;

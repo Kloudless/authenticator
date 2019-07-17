@@ -3,14 +3,21 @@
 module.exports = {
   root: true,
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
+    ecmaFeatures: {
+      jsx: true
+    },
+    sourceType: "module"
   },
   env: {
     browser: true,
+    commonjs: true,
+    es6: true,
+    node: true
   },
   extends: [
     // https://github.com/airbnb/javascript
-    'airbnb-base'
+    'airbnb'
   ],
   // add your custom rules here
   rules: {

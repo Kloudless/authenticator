@@ -1,0 +1,30 @@
+{
+  "name": "storybook-vue",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "storybook": "start-storybook -p 9001",
+    "build": "build-storybook -c .storybook -o ../.demo/vue"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "7.3.4",
+    "@storybook/addon-actions": "5.0.6",
+    "@storybook/addon-console": "1.1.0",
+    "@storybook/addon-knobs": "5.0.6",
+    "@storybook/addon-options": "5.0.1",
+    "@storybook/addons": "5.0.6",
+    "@storybook/vue": "5.0.6",
+    "babel-loader": "8.0.5",
+    "babel-plugin-transform-define": "1.3.1",
+    "babel-preset-vue": "2.0.2",
+    "storybook-readme": "5.0.2",
+    "vue-loader": "15.7.0",
+    "vue-template-compiler": "2.6.8"
+  },
+  "dependencies": {
+    "vue": "2.6.8"
+  }
+}

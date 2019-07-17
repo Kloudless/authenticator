@@ -9,11 +9,11 @@
     document.body.appendChild(newEl);
   };
 
-  window.Kloudless.authenticator($('#oauth-test'), {
+  window.Kloudless.auth.authenticator($('#oauth-test'), {
     client_id: window.app_id,
   }, cb);
 
-  const auth = window.Kloudless.authenticator({
+  const auth = window.Kloudless.auth.authenticator({
     client_id: window.app_id,
   }, cb);
 
@@ -25,7 +25,7 @@
   // Older auth
 
   // window.Kloudless.authenticator(document.getElementById('auth-test'), {
-  window.Kloudless.authenticator($('#auth-test'), {
+  window.Kloudless.auth.authenticator($('#auth-test'), {
     app_id: window.app_id,
     // services: 'dropbox'
     // services: ['dropbox']

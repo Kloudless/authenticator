@@ -1,16 +1,12 @@
-'use strict'
-const path = require('path')
-const webpack = require('webpack')
+const path = require('path');
 
-const config = require('../config')
-
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+function resolve(dir) {
+  return path.join(__dirname, '..', dir);
 }
 
-
 const webpackConfig = {
-  entry: './src/webpack-index.js',
+  entry: './src/browser/webpack-index.js',
+  mode: 'development',
   module: {
     rules: [
       {
@@ -22,16 +18,10 @@ const webpackConfig = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src')]
-      }
-    ]
+        include: [resolve('src')],
+      },
+    ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'DEBUG': config.build.debug || false,
-      'BASE_URL': config.build.base_url || JSON.stringify('https://api.kloudless.com')
-    })
-  ]
-}
+};
 
-module.exports = webpackConfig
+module.exports = webpackConfig;

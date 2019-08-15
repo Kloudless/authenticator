@@ -1,4 +1,5 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, */
+/* eslint no-underscore-dangle: ["error", { "allow": ["_options"] }] */
 /**
  * Turns an element into a widget, which opens up a verification popup and gives
  * it event listeners.
@@ -39,7 +40,7 @@ window.addEventListener('message', (message) => {
 
   // check if message has kloudless namespace
   if (typeof (message.data) !== 'string'
-      || message.data.indexOf(namespace) !== 0) {
+    || message.data.indexOf(namespace) !== 0) {
     // if the message is from other app, ignore it
     return;
   }
@@ -79,61 +80,74 @@ window.addEventListener('message', (message) => {
 }, false);
 
 /*
- * Older services page auth.
+ * Get v0 query parameters
  */
-const servicesPathFromParams = function servicesPathFromParams(params) {
-  let path = '/services/';
+const getV0QueryParams = function getV0QueryParams(params) {
+  const {
+    app_id: appId, admin, extra, services, group, edit_account: editAccount,
+    developer,
+  } = params;
 
-  if (typeof params.services === 'string') {
-    params.services = [params.services];
-  }
+  const queryParams = {
+    app_id: appId,
+    admin: admin ? 1 : '',
+    extra: extra || '',
+    callback: '',
+    retrieve_account_key: '',
+  };
 
-  if (params.services === undefined) {
-    path += '?';
-  } else if (params.services.length === 1) {
-    path += `${params.services[0]}?`;
-  } else if (params.services.length > 1) {
-    path += `?services=${params.services.map(e => e.trim()).join(',')}&`;
+  if (services.length > 1) {
+    queryParams.services = services.map(s => s.trim()).join(',');
   }
-  path += `app_id=${params.app_id
-  }&admin=${params.admin ? 1 : ''
-  }&extra=${params.extra ? params.extra : ''
-  }&callback=&retrieve_account_key=`;
 
   // Used for Kloudless Enterprise proxying
-  if (params.group) {
-    path += `&group=${params.group}`;
+  if (group) {
+    queryParams.group = group;
   }
 
-  if (params.edit_account) {
-    path += `&edit_account=${params.edit_account}`;
+  if (editAccount) {
+    queryParams.edit_account = editAccount;
   }
 
-  if (params.developer) path += '&developer=true';
+  if (developer) {
+    queryParams.developer = 'true';
+  }
 
-  return path;
+  return queryParams;
 };
 
 /*
- * OAuth first-leg path.
+ * Get OAuth 2.0 query parameters
  */
-const oauthPathFromParams = function oauthPathFromParams(params) {
-  let path = `/${apiVersion}/oauth/?`;
+const getQueryParams = function getQueryParams(params, requestId) {
+  const queryParams = {
+    redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+    response_type: 'token',
+    state: requestId,
+  };
 
-  params.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
-  params.response_type = 'token';
-  params.state = parseInt(Math.random() * (10 ** 10), 10);
+  const forbiddenKeys = Object.keys(queryParams);
 
   Object.keys(params).forEach((key) => {
-    let val = params[key];
-
-    // Special checks
-    if (key === 'scopes' && val.join) { val = val.join(' '); }
-
-    path += `&${key}=${val}`;
+    if (forbiddenKeys.includes(key)) {
+      return;
+    }
+    const value = params[key];
+    if (value === undefined || value === null) {
+      return;
+    }
+    if (key === 'raw') {
+      Object.keys(value).forEach((rawKey) => {
+        queryParams[`raw[${rawKey}]`] = value[rawKey];
+      });
+    } else if (typeof value === 'object') {
+      queryParams[key] = JSON.stringify(value);
+    } else {
+      queryParams[key] = value;
+    }
   });
 
-  return path;
+  return queryParams;
 };
 
 const addIframe = function addIframe() {
@@ -156,7 +170,7 @@ const addIframe = function addIframe() {
  * Old callback requires errors in the first parameter
  */
 const wrapServicesCallback = function wrapServicesCallback(callback) {
-// eslint-disable-next-line func-names
+  // eslint-disable-next-line func-names
   return function (data) {
     callback(null, data);
   };
@@ -209,7 +223,7 @@ function load(url, headers, callback) {
  * OAuth callback needs additional account information.
  */
 const wrapOAuthCallback = function wrapOAuthCallback(callback, state) {
-// eslint-disable-next-line func-names,consistent-return
+  // eslint-disable-next-line func-names,consistent-return
   return function (data) {
     const { baseUrl } = globalOptions;
     if (!data.state || data.state.toString() !== state.toString()) {
@@ -233,8 +247,7 @@ const wrapOAuthCallback = function wrapOAuthCallback(callback, state) {
         const accountID = JSON.parse(tokenXHR.responseText).account_id;
 
         load(
-          `${baseUrl}/${apiVersion}/accounts/${
-            accountID}/?retrieve_full=False`,
+          `${baseUrl}/${apiVersion}/accounts/${accountID}/?retrieve_full=False`,
           headers, (accountXHR) => {
             if (accountXHR.status === 200) {
               data.account = JSON.parse(accountXHR.responseText);
@@ -311,29 +324,47 @@ const authenticator = function authenticator(element, options, callback) {
     element = null; // eslint-disable-line no-param-reassign
   }
 
-  if (!options.client_id && !options.app_id) {
+  const _options = { ...options }; // shallow copy
+  if (!_options.client_id && !_options.app_id) {
     throw new Error('An App ID is required.');
   }
 
-  let path;
-  if (options.app_id) {
-    path = servicesPathFromParams(options);
-    // eslint-disable-next-line no-param-reassign
-    callback = wrapServicesCallback(callback);
-  } else {
-    path = oauthPathFromParams(options);
-    // eslint-disable-next-line no-param-reassign
-    callback = wrapOAuthCallback(callback, options.state);
+  // parse _options.scope to a string
+  if (Array.isArray(_options.scope)) {
+    _options.scope = _options.scope.join(' ');
   }
 
   const requestId = parseInt(Math.random() * (10 ** 10), 10);
-  const origin = `${window.location.protocol}//${window.location.host}`;
 
-  path += `&request_id=${requestId}`;
-  path += `&origin=${encodeURIComponent(origin)}`;
+  const useV0 = !!_options.app_id;
+  let path = `/${apiVersion}/oauth`;
+  let queryParams = getQueryParams(_options, requestId);
+  // eslint-disable-next-line no-param-reassign
+  callback = wrapOAuthCallback(callback, requestId);
 
+  if (useV0) {
+    // parse _options.services to an array of strings
+    if (!Array.isArray(_options.services)) {
+      _options.services = _options.services ? [_options.services] : [];
+    }
+    path = '/services';
+    if (_options.services.length === 1) {
+      path += `/${_options.services[0]}`;
+    }
+    queryParams = getV0QueryParams(_options);
+    // eslint-disable-next-line no-param-reassign
+    callback = wrapServicesCallback(callback);
+  }
+
+  queryParams.request_id = requestId;
+  queryParams.origin = `${window.location.protocol}//${window.location.host}`;
+
+  const queryStrings = Object.keys(queryParams).map(key => (
+    `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`
+  )).join('&');
+  const url = `${baseUrl}${path}?${queryStrings}`;
   if (debug) {
-    console.log('[DEBUG]', 'Path is', baseUrl + path);
+    console.log('[DEBUG]', 'Path is', url);
   }
 
   const clickHandler = function clickHandler() {
@@ -350,7 +381,7 @@ const authenticator = function authenticator(element, options, callback) {
     if (isIE) {
       const data = {
         type: 'prepareToOpenAuthenticator',
-        url: baseUrl + path,
+        url,
         params: popupParams,
       };
       const iframe = authenticatorIframe;
@@ -381,10 +412,7 @@ const authenticator = function authenticator(element, options, callback) {
         op -= op * 0.01;
       }, 120);
     } else {
-      popup = window.open(
-        baseUrl + path,
-        'kPOPUP', popupParams,
-      );
+      popup = window.open(url, 'kPOPUP', popupParams);
       popup.focus();
     }
   };

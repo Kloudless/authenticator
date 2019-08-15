@@ -18,6 +18,7 @@ successfully connected.
   * [Importing from an ES6 Module](#importing-from-an-es6-module)
 * [Global Options](#global-options)
 * [Options](#options)
+  * [Example](#example)
 * [Methods](#methods)
   * [auth.authenticator()](#authauthenticator)
   * [auth.stop()](#authstop)
@@ -149,18 +150,54 @@ it is an Array. Refer to the docs for more information on Scopes.
 
 A full list of parameters supported is available on the
 [OAuth docs](https://developers.kloudless.com/docs/latest/authentication#oauth-2.0-first-leg).
-`state`, `response_type` and `redirect_uri` are not required as they will be set
-automatically.
+Note that the following options cannot be overridden for consistency or security
+reasons:
 
-For example:
+  * `response_type`
+  * `redirect_uri`
+  * `origin`
+  * `state`
 
-    {
-      'client_id': 'APP_ID_ABC_123',
-      'scope': 'gdrive box dropbox salesforce.crm all:admin'
-    }
+For convenience, the following parameters can be specified as objects:
+
+  * `extra_data` (converted to a URL-encoded JSON string)
+  * `custom_properties` (converted to a URL-encoded JSON string)
+  * `raw` (converted to the `raw[key]=value` format described in the docs)
 
 Your application's App ID is available on the App Details page in the
 [Developer Portal](https://developers.kloudless.com/applications/*/details).
+
+### Example
+
+- Basic usage:
+  ```javascript
+  {
+    client_id: 'APP_ID_ABC_123',
+    scope: 'gdrive box dropbox salesforce.crm all:admin'
+  }
+  ```
+
+- Set a default domain for the FTP service:
+  ```javascript
+  {
+    client_id: 'APP_ID_ABC_123',
+    scope: 'ftp',
+    extra_data: {
+      domain: 'ftps://ftp.example.com:21'
+    }
+  }
+  ```
+
+- Ask for read-only access and pre-fill the login account for Google Drive:
+  ```javascript
+  {
+    client_id: 'APP_ID_ABC_123',
+    scope: 'gdrive.storage."https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.readonly":raw',
+    raw: {
+      login_hint: 'abc@example.com',
+    }
+  }
+  ```
 
 ## Methods
 

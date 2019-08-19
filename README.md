@@ -8,7 +8,7 @@ The library lets you open a pop-up that allows the user to choose a cloud
 service to connect. The pop-up closes once the account has been
 successfully connected.
 
-[View a JSBin example of the Authenticator in action here.](https://output.jsbin.com/defekug)
+[View a JSBin example of the Authenticator in action here.](https://jsbin.com/tanoguw)
 
 ## Table of contents
 
